@@ -26,7 +26,7 @@ public class BackdashExplosion : MonoBehaviour
                 rb.AddExplosionForce(power, explosionPos, radius, upwardForce, ForceMode.Impulse);
             }
         }
-        //Destroy(gameObject);
+        Destroy(gameObject);
     }
     private void OnDrawGizmos()
     {

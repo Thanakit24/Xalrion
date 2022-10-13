@@ -27,6 +27,7 @@ public class PlayerWeapons : MonoBehaviour
     public float dashcoolDownMax;
     public float dashDuration;
     public float maxDashYSpeed;
+    public float dereaseFuel;
 
     [Header("Backdash Settings")]
     public bool useCameraForward = true;
@@ -59,12 +60,12 @@ public class PlayerWeapons : MonoBehaviour
 
     private void FiringCheck()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse0) && readyToShoot)
+        if (Input.GetKeyDown(KeyCode.Joystick1Button5) && readyToShoot)
         {
             Shoot();
         }
 
-        if (Input.GetKeyDown(KeyCode.Mouse1))
+        if (Input.GetKeyDown(KeyCode.Joystick1Button7))
         {
             Backdash();
         }
@@ -136,10 +137,10 @@ public class PlayerWeapons : MonoBehaviour
     }
     private void Backdash()
     {
-        if (dashcoolDown > 0) return;
+        if (dashcoolDown > 0 || player.currentFuel <= 0) return;
         else dashcoolDown = dashcoolDownMax;
         player.usingJettpack = false;
-        player.dashing = true;
+        player.backDashing = true;
         player.maxYSpeed = maxDashYSpeed;
 
         float xRot = playerCam.eulerAngles.x;
@@ -155,7 +156,6 @@ public class PlayerWeapons : MonoBehaviour
         if (disableGravity)
             rb.useGravity = false; 
         delayedForceToApply = forceToApply;
-        //Instantiate(backdashExplosion, shootPoint.position, Quaternion.identity);
         BackdashShot();
         Invoke(nameof(DelayedDashForce), 0.025f);
         Invoke(nameof(ResetBackDash), dashDuration);
@@ -165,14 +165,16 @@ public class PlayerWeapons : MonoBehaviour
 
     private void DelayedDashForce()
     {
+        player.currentFuel -= dereaseFuel;
         if (resetVel)
             rb.velocity = Vector3.zero;
+        player.jetCooldownTimer = 0f;
         rb.AddForce(delayedForceToApply, ForceMode.Impulse);
     }
     private void ResetBackDash()
     {
-        player.dashing = false;
-        player.maxYSpeed = 0;
+        player.backDashing = false;
+        player.maxYSpeed = 0; 
         if (disableGravity)
             rb.useGravity = true;
     }

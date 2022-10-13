@@ -22,7 +22,6 @@ public class RocketExplosion : MonoBehaviour
             
             if (rb != null)
             {
-                //print("Explode");
                 rb.AddExplosionForce(power, explosionPos, radius, upwardForce, ForceMode.Impulse);
             }
         }

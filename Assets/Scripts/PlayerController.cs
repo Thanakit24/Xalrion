@@ -1,7 +1,6 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI; 
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -25,7 +24,7 @@ public class PlayerController : MonoBehaviour
     public float moveSpeed;
     public float dashSpeed;
     public float dashSpeedChangeFactor;
-    public bool dashing = false;
+    public bool backDashing = false;
     public float desiredMoveSpeed;
     private float lastDesiredMoveSpeed;
     private bool keepMomentum = false;
@@ -72,7 +71,7 @@ public class PlayerController : MonoBehaviour
     public ParticleSystem jetPackParticle;
     void StateHandler()  //changed currentSpeed to desiredMovespeed for dashing
     {
-        if (dashing)
+        if (backDashing)
         {
             //rb.drag = 0;
             state = MovementState.dashing;
@@ -81,13 +80,13 @@ public class PlayerController : MonoBehaviour
             speedChangeFactor = dashSpeedChangeFactor;
         }
 
-        if (isGrounded && !dashing)
+        if (isGrounded && !backDashing)
         {
             state = MovementState.walking;
             desiredMoveSpeed = moveSpeed;
         }
 
-       if (!isGrounded && !dashing)
+       if (!isGrounded && !backDashing)
         {
             state = MovementState.air;
             //desiredMoveSpeed = moveSpeed;
@@ -142,11 +141,11 @@ public class PlayerController : MonoBehaviour
         }
         lastGrounded = isGrounded;
 
-        if (!usingJettpack && currentFuel < maxFuel)
+        if (!usingJettpack && currentFuel < maxFuel) //if not doing anyth and current fuel isnt full
         {
-            jetCooldownTimer += Time.deltaTime;
+            jetCooldownTimer += Time.deltaTime; //start countodown
 
-            if (jetCooldownTimer >= jetCooldownMaxTimer)
+            if (jetCooldownTimer >= jetCooldownMaxTimer) //when countdown reaches, do behavior below
             {
                 jetCooldownTimer = jetCooldownMaxTimer;
                 currentFuel += fuelIncrease * Time.deltaTime;
@@ -168,16 +167,18 @@ public class PlayerController : MonoBehaviour
 
     void ProcessInputs()
     {
-        horizontal = Input.GetAxisRaw("Horizontal");
-        vertical = Input.GetAxisRaw("Vertical");
+        horizontal = Input.GetAxisRaw("MovementHorizontal");
+        vertical = Input.GetAxisRaw("MovementVertical");
 
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded && !hasJumped && !usingJettpack) //jump 
+        //string test = "horiz";
+        //print($"HORIZ: {horizontal}");
+        //print($"VERT: { vertical}");
+        if (Input.GetKeyDown(KeyCode.Joystick1Button1) && isGrounded && !hasJumped && !usingJettpack) //jump 
         {
             Jump();
         }
 
-        initialLaunch = (Input.GetKeyDown(KeyCode.Space) && !isGrounded && currentFuel > 0); //check for jettpack input
-        //print(initialLaunch);
+        initialLaunch = (Input.GetKeyDown(KeyCode.Joystick1Button4) && !isGrounded && currentFuel > 0); //check for jettpack input
 
         if (initialLaunch) //jetpack impulse
         {
@@ -188,18 +189,23 @@ public class PlayerController : MonoBehaviour
             jetCooldownTimer = 0;
         }
 
-        if (Input.GetKey(KeyCode.Space) && !isGrounded && currentFuel > 0 && usingJettpack) //jetpack force
+        if (Input.GetKey(KeyCode.Joystick1Button4) && !isGrounded && currentFuel > 0 && usingJettpack) //jetpack force
         {
-            Jetpack();
             print("jettpack called");
+            Jetpack();
         }
         else
         {
             usingJettpack = false;
             jetPackParticle.gameObject.SetActive(false);
-        rb.useGravity = true; 
+            rb.useGravity = true;
         }
     }
+
+    //public bool isMoving()
+    //{
+    //    return (vertical != 0 && horizontal != 0);
+    //}
     void MovePlayer()
     {
         if (state == MovementState.dashing) return;
@@ -245,7 +251,7 @@ public class PlayerController : MonoBehaviour
         currentFuel -= fuelDecrease * Time.deltaTime;
         jetPackParticle.gameObject.SetActive(true); //temp use
         Vector3 flyDir = orientation.forward * vertical + orientation.right * horizontal + orientation.up; //getting the player's direction
-        rb.AddForce(flyDir * flyForce, ForceMode.Force);
+        rb.AddForce(flyDir * flyForce * Time.deltaTime, ForceMode.Force);
     }
     private void SpeedControl()
     {
