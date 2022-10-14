@@ -86,7 +86,6 @@ GameObject:
   m_Component:
   - component: {fileID: 5270764264446332785}
   - component: {fileID: 5270764264446332786}
-  - component: {fileID: 5270764264446332787}
   - component: {fileID: 5270764264446332791}
   - component: {fileID: 5270764264446332784}
   m_Layer: 8
@@ -130,13 +129,13 @@ Camera:
   m_FocalLength: 50
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: 0
+    x: 0.5
     y: 0
-    width: 1
+    width: 0.5
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 60
+  field of view: 90
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -154,14 +153,6 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!81 &5270764264446332787
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5270764264446332780}
-  m_Enabled: 1
 --- !u!114 &5270764264446332791
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -567,8 +558,8 @@ GameObject:
   m_Component:
   - component: {fileID: 5270764265413001783}
   - component: {fileID: 5270764265413001781}
-  - component: {fileID: 5270764265413001782}
-  - component: {fileID: 5270764265413001780}
+  - component: {fileID: 7792962377397171784}
+  - component: {fileID: 6865326367687807898}
   m_Layer: 8
   m_Name: PlayerB
   m_TagString: Player
@@ -608,7 +599,7 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 112
   m_CollisionDetection: 1
---- !u!114 &5270764265413001782
+--- !u!114 &7792962377397171784
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -617,18 +608,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 5270764265413001776}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e35801bf8f0e48448b7ce7b0046238d7, type: 3}
+  m_Script: {fileID: 11500000, guid: 884e9f481ac1f114fbe625993d0cae0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   state: 0
   orientation: {fileID: 5270764263961548376}
-  moveSpeed: 7
+  moveSpeed: 7.5
   dashSpeed: 25
   dashSpeedChangeFactor: 35
   backDashing: 0
   desiredMoveSpeed: 0
   maxYSpeed: 0
-  jumpForce: 6
+  jumpForce: 7
   airMultiplier: 0.55
   fallJumpGravity: 0.1
   maxAirVelocity: 8
@@ -650,13 +641,13 @@ MonoBehaviour:
   groundLayerMask:
     serializedVersion: 2
     m_Bits: 64
-  groundCheckRadius: 0.2
+  groundCheckRadius: 0.15
   isGrounded: 0
-  groundDrag: 4
+  groundDrag: 5
   maxSlopeAngle: 40
   exitingSlope: 0
   jetPackParticle: {fileID: 7471233303202776520}
---- !u!114 &5270764265413001780
+--- !u!114 &6865326367687807898
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -665,7 +656,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5270764265413001776}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76586bdbb893bcb42a1c496ef6c38581, type: 3}
+  m_Script: {fileID: 11500000, guid: babb681f347ac9f42a95d14e6e584d1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   rocket: {fileID: 8937822956089399610, guid: 336e8b1156fb6434c822d603d607e0f7, type: 3}

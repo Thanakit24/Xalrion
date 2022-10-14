@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class PlayerWeapons : MonoBehaviour
+public class PlayerBWeapons : MonoBehaviour
 {
     [Header("Rocket")]
     public GameObject rocket;
@@ -37,13 +37,13 @@ public class PlayerWeapons : MonoBehaviour
  
 
     //Ref
-    private PlayerController player;
+    private PlayerBController player;
 
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        player = GetComponent<PlayerController>();
+        player = GetComponent<PlayerBController>();
         readyToShoot = true;
     }
 
@@ -60,12 +60,12 @@ public class PlayerWeapons : MonoBehaviour
 
     private void FiringCheck()
     {
-        if (Input.GetKeyDown(KeyCode.Joystick1Button5) && readyToShoot)
+        if (Input.GetKeyDown(KeyCode.Joystick2Button5) && readyToShoot)
         {
             Shoot();
         }
 
-        if (Input.GetKeyDown(KeyCode.Joystick1Button7))
+        if (Input.GetKeyDown(KeyCode.Joystick2Button7))
         {
             Backdash();
         }

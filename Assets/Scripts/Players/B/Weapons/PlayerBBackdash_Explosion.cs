@@ -2,32 +2,31 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RocketExplosion : MonoBehaviour
+public class PlayerBBackdash_Explosion : MonoBehaviour
 {
     public float radius = 5.0f;
     public float power = 10.0f;
     public float upwardForce;
-    public GameObject rocketExplosionEffect; 
-   
-    private void OnCollisionEnter(Collision collision)
+    public GameObject backDashExplosionEffect;
+
+    private void Start()
     {
         Vector3 explosionPos = transform.position;
-        Instantiate(rocketExplosionEffect, transform.position, transform.rotation);
+        Instantiate(backDashExplosionEffect, transform.position, transform.rotation);
         Collider[] colliders = Physics.OverlapSphere(explosionPos, radius);
-        
+
         foreach (Collider hit in colliders)
         {
             //Rigidbody rb = hit.GetComponent<Rigidbody>();
             var rb = hit.attachedRigidbody;
-            
-            if (rb != null)
+
+            if (rb != null && gameObject.CompareTag("Opponent"))
             {
-                //rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
+                //print("Explode");
                 rb.AddExplosionForce(power, explosionPos, radius, upwardForce, ForceMode.Impulse);
             }
         }
         Destroy(gameObject);
-
     }
     private void OnDrawGizmos()
     {

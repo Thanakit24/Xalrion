@@ -2,9 +2,9 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerController : MonoBehaviour
+public class PlayerBController : MonoBehaviour
 {
-    public static PlayerController instance;
+    public static PlayerBController instance;
     public MovementState state;
     public enum MovementState
     {
@@ -168,18 +168,18 @@ public class PlayerController : MonoBehaviour
 
     void ProcessInputs()
     {
-        horizontal = Input.GetAxisRaw("MovementHorizontal");
-        vertical = Input.GetAxisRaw("MovementVertical");
+        horizontal = Input.GetAxisRaw("MovementHorizontal2");
+        vertical = Input.GetAxisRaw("MovementVertical2");
 
         //string test = "horiz";
         //print($"HORIZ: {horizontal}");
         //print($"VERT: { vertical}");
-        if (Input.GetKeyDown(KeyCode.Joystick1Button1) && isGrounded && !hasJumped && !usingJettpack) //jump 
+        if (Input.GetKeyDown(KeyCode.Joystick2Button1) && isGrounded && !hasJumped && !usingJettpack) //jump 
         {
             Jump();
         }
 
-        initialLaunch = (Input.GetKeyDown(KeyCode.Joystick1Button4) && !isGrounded && currentFuel > 0); //check for jettpack input
+        initialLaunch = (Input.GetKeyDown(KeyCode.Joystick2Button4) && !isGrounded && currentFuel > 0); //check for jettpack input
 
         if (initialLaunch) //jetpack impulse
         {
@@ -190,7 +190,7 @@ public class PlayerController : MonoBehaviour
             jetCooldownTimer = 0;
         }
 
-        if (Input.GetKey(KeyCode.Joystick1Button4) && !isGrounded && currentFuel > 0 && usingJettpack) //jetpack force
+        if (Input.GetKey(KeyCode.Joystick2Button4) && !isGrounded && currentFuel > 0 && usingJettpack) //jetpack force
         {
             print("jettpack called");
             Jetpack();
