@@ -123,6 +123,7 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //print(exitingSlope);
         fuelSlider.value = currentFuel;
         isGrounded = Physics.CheckSphere(groundCheck.position, groundCheckRadius, groundLayerMask);
         if (isGrounded)
@@ -212,7 +213,7 @@ public class PlayerController : MonoBehaviour
         moveDirection = orientation.forward * vertical + orientation.right * horizontal; //use this for jump dir
         if (OnSlope() && !exitingSlope) //when moving on slope and not exiting slope
         {
-            //print("currently on slope");
+            print("currently on slope");
             rb.AddForce(SlopeMoveDirection() * moveSpeed * 15f, ForceMode.Force);
             if (rb.velocity.y > 0)
             {
@@ -303,7 +304,7 @@ public class PlayerController : MonoBehaviour
     }
     private bool OnSlope()
     {
-        if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, 3f))
+        if (Physics.Raycast(groundCheck.position, Vector3.down, out slopeHit, 0.2f))
         {
             if (slopeHit.transform.gameObject.layer == LayerMask.NameToLayer("Ground"))
             {

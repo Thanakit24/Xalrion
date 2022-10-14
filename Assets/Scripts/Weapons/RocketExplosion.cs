@@ -22,6 +22,7 @@ public class RocketExplosion : MonoBehaviour
             
             if (rb != null)
             {
+                //rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
                 rb.AddExplosionForce(power, explosionPos, radius, upwardForce, ForceMode.Impulse);
             }
         }
