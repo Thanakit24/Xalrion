@@ -65,7 +65,7 @@ public class PlayerAWeapons : MonoBehaviour
             Shoot();
         }
 
-        if (Input.GetKeyDown(KeyCode.Joystick1Button7))
+        if (Input.GetAxis("XBoxRightTrigger") > 0)
         {
             Backdash();
         }

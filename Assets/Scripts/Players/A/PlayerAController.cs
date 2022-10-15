@@ -174,7 +174,7 @@ public class PlayerAController : MonoBehaviour
         //string test = "horiz";
         //print($"HORIZ: {horizontal}");
         //print($"VERT: { vertical}");
-        if (Input.GetKeyDown(KeyCode.Joystick1Button1) && isGrounded && !hasJumped && !usingJettpack) //jump 
+        if (Input.GetKeyDown(KeyCode.Joystick1Button0) && isGrounded && !hasJumped && !usingJettpack) //jump 
         {
             Jump();
         }
