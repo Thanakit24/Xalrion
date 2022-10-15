@@ -24,9 +24,9 @@ public class PlayerBCam : MonoBehaviour
         float mouseX = Input.GetAxis("CameraHorizontalB") * Time.deltaTime * sensX;
         float mouseY = Input.GetAxis("CameraVerticalB") * Time.deltaTime * sensY;
 
-        yRotation += mouseY;
+        yRotation += mouseX;
 
-        xRotation += mouseX;
+        xRotation += mouseY;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 
         transform.rotation = Quaternion.Euler(xRotation, yRotation, 0);

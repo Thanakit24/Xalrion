@@ -69,7 +69,6 @@ public class PlayerAWeapons : MonoBehaviour
         {
             Backdash();
         }
-
     }
     private void ChargeShot()
     {
