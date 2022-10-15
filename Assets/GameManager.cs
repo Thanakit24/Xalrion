@@ -5,7 +5,6 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public Transform playerASpawnpoint;
-    public Transform playerAcam;
     public Transform playerBSpawnpoint;
     // Start is called before the first frame update
     void Start()

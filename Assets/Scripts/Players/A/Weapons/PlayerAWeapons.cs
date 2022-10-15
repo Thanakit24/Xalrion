@@ -18,7 +18,6 @@ public class PlayerAWeapons : MonoBehaviour
     [Header("Backdash")]
     public GameObject backdashExplosion;
     public Transform orientation;
-    public Transform playerCam;
     private Rigidbody rb;
     //public float pushBackForce;
     public float backDashForce;
@@ -98,7 +97,7 @@ public class PlayerAWeapons : MonoBehaviour
 
         currentBullet.transform.forward = direction.normalized;
         currentBullet.GetComponent<Rigidbody>().AddForce(direction.normalized * shootForce, ForceMode.Impulse);
-        rb.AddForce(-playerCam.forward * recoilForce, ForceMode.Impulse);
+        rb.AddForce(-cam.transform.forward * recoilForce, ForceMode.Impulse);
 
         if (allowInvoke)
         {
@@ -142,15 +141,15 @@ public class PlayerAWeapons : MonoBehaviour
         player.backDashing = true;
         player.maxYSpeed = maxDashYSpeed;
 
-        float xRot = playerCam.eulerAngles.x;
+        float xRot = cam.transform.eulerAngles.x;
         float multiplier = 0.1f;
         if (xRot <= 90)
         {
             multiplier = xRot / 90;
         }  
-        Vector3 backward = new Vector3(-playerCam.forward.x, 0, -playerCam.forward.z);
+        Vector3 backward = new Vector3(-cam.transform.forward.x, 0, -cam.transform.forward.z);
         Vector3 forceToApply = (backward * backDashForce) + (transform.up * upBackDashForce * multiplier);
-        if (xRot == 90) print(playerCam.up * upBackDashForce * multiplier);
+        if (xRot == 90) print(cam.transform.up * upBackDashForce * multiplier);
 
         if (disableGravity)
             rb.useGravity = false; 

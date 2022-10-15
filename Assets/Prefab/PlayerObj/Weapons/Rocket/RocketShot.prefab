@@ -129,3 +129,8 @@ MonoBehaviour:
   power: 5
   upwardForce: 2.5
   rocketExplosionEffect: {fileID: 6324737381858901698, guid: 1e42b3dacac16004cbc28a77b6a0ee4d, type: 3}
+  blockExplosionLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  maxDamage: 50
+  minDamage: 10

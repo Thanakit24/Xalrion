@@ -38,6 +38,11 @@ public class PlayerAController : MonoBehaviour
     public float maxAirVelocity;
     public bool hasJumped = false;
 
+    [Header("Health")]
+    public int currentHealth;
+    public int maxHealth;
+    public Slider healthSlider; 
+
     [Header("Jetpack")]
     public Transform jetPackTransform;
     public bool initialLaunch;
@@ -114,6 +119,8 @@ public class PlayerAController : MonoBehaviour
     void Start()
     {
         instance = this;
+        currentHealth = maxHealth;
+        healthSlider.maxValue = maxHealth; 
         currentFuel = maxFuel;
         fuelSlider.maxValue = maxFuel;
         rb = GetComponent<Rigidbody>();
@@ -124,6 +131,7 @@ public class PlayerAController : MonoBehaviour
     void Update()
     {
         //print(exitingSlope);
+        healthSlider.value = currentHealth;
         fuelSlider.value = currentFuel;
         isGrounded = Physics.CheckSphere(groundCheck.position, groundCheckRadius, groundLayerMask);
         if (isGrounded)
@@ -160,6 +168,11 @@ public class PlayerAController : MonoBehaviour
         ProcessInputs();
         SpeedControl();
         StateHandler();
+
+        if (currentHealth <= 0)
+        {
+            Died();
+        }
     }
     private void FixedUpdate()
     {
@@ -254,6 +267,18 @@ public class PlayerAController : MonoBehaviour
         Vector3 flyDir = orientation.forward * vertical + orientation.right * horizontal + orientation.up; //getting the player's direction
         rb.AddForce(flyDir * flyForce * Time.deltaTime, ForceMode.Force);
     }
+
+    public void TakeDamage(int damage)
+    {
+        currentHealth -= damage;
+    }
+
+    public void Died()
+    {
+        print("Dead");
+        //call game manager to increase score counter. 
+        //decrement current lives.
+    }
     private void SpeedControl()
     {
         if (OnSlope() && !exitingSlope)
@@ -319,4 +344,5 @@ public class PlayerAController : MonoBehaviour
     {
         return Vector3.ProjectOnPlane(moveDirection, slopeHit.normal).normalized;
     }
+
 }
