@@ -21,13 +21,12 @@ public class PlayerBCam : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        float mouseX = Input.GetAxisRaw("CameraHorizontalB") * Time.deltaTime * sensX;
-        float mouseY = Input.GetAxisRaw("CameraVerticalB") * Time.deltaTime * sensY;
+        float mouseX = Input.GetAxis("CameraHorizontalB") * Time.deltaTime * sensX;
+        float mouseY = Input.GetAxis("CameraVerticalB") * Time.deltaTime * sensY;
 
-        print(mouseX);
-        yRotation += mouseX;
+        yRotation += mouseY;
 
-        xRotation -= mouseY;
+        xRotation += mouseX;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 
         transform.rotation = Quaternion.Euler(xRotation, yRotation, 0);
