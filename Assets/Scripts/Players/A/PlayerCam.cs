@@ -6,9 +6,10 @@ public class PlayerCam : MonoBehaviour
 {
     public float sensX;
     public float sensY;
-
+    float mouseX;
+    float mouseY;
     public Transform orientation;
-
+    public bool playerA = false;
     private float xRotation;
     private float yRotation;
     // Start is called before the first frame update
@@ -16,17 +17,32 @@ public class PlayerCam : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+        if (!playerA)
+        {
+            //change the cam to the desired look dir
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        float mouseX = Input.GetAxis("CameraHorizontal") * Time.deltaTime * sensX;
-        float mouseY = Input.GetAxis("CameraVertical") * Time.deltaTime * sensY;
-
-        yRotation += mouseY;
-
-        xRotation += mouseX;
+        if (playerA)
+        {
+            mouseX = Input.GetAxis("Mouse X") * Time.deltaTime * sensX;
+            mouseY = Input.GetAxis("Mouse Y") * Time.deltaTime * sensY;
+            yRotation -= mouseX;
+            xRotation -= mouseY;
+        }
+        else
+        {
+            //print("Player B set to controller cam");                                                        
+            mouseX = Input.GetAxis("CameraHorizontal") * Time.deltaTime * sensX;
+            mouseY = Input.GetAxis("CameraVertical") * Time.deltaTime * sensY;
+            yRotation += mouseX;
+            xRotation += mouseY;
+        }
+       
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 
         transform.rotation = Quaternion.Euler(xRotation, yRotation, 0);

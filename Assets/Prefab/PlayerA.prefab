@@ -27,6 +27,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 717738848181624098}
   - {fileID: 5270764265303254754}
   m_Father: {fileID: 5270764264480214646}
   m_RootOrder: 1
@@ -210,6 +211,7 @@ MonoBehaviour:
   sensX: 300
   sensY: 300
   orientation: {fileID: 5270764263961548376}
+  playerA: 0
 --- !u!1 &5270764264480214647
 GameObject:
   m_ObjectHideFlags: 0
@@ -242,7 +244,7 @@ Transform:
   - {fileID: 5270764264734752417}
   - {fileID: 5270764263987200434}
   m_Father: {fileID: 5270764265413001783}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5270764264535034834
 GameObject:
@@ -459,7 +461,7 @@ Transform:
   m_Children:
   - {fileID: 7471233303202776523}
   m_Father: {fileID: 5270764263961548376}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5270764265381621807
 GameObject:
@@ -588,7 +590,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 5270764264535034833}
-  - {fileID: 717738848181624098}
   - {fileID: 5270764264480214646}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -621,7 +622,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e35801bf8f0e48448b7ce7b0046238d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PlayerA: 0
   state: 0
+  jump: 32
+  jetPack: 32
   orientation: {fileID: 5270764263961548376}
   moveSpeed: 7.5
   dashSpeed: 25
@@ -634,6 +638,9 @@ MonoBehaviour:
   fallJumpGravity: 0.1
   maxAirVelocity: 8
   hasJumped: 0
+  currentHealth: 0
+  maxHealth: 0
+  healthSlider: {fileID: 0}
   jetPackTransform: {fileID: 5270764265303254754}
   initialLaunch: 0
   usingJettpack: 0
@@ -669,6 +676,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76586bdbb893bcb42a1c496ef6c38581, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fire01: 323
+  fire02: 324
   rocket: {fileID: 8937822956089399610, guid: 336e8b1156fb6434c822d603d607e0f7, type: 3}
   recoilForce: 10
   shootForce: 30
@@ -679,7 +688,6 @@ MonoBehaviour:
   shootPoint: {fileID: 5270764264651969979}
   backdashExplosion: {fileID: 8937822956089399610, guid: 5a21822e211125d4b841b6bb0921ce76, type: 3}
   orientation: {fileID: 5270764263961548376}
-  playerCam: {fileID: 5270764264446332785}
   backDashForce: 170
   upBackDashForce: 25
   dashcoolDown: 0
@@ -721,8 +729,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0.622, z: 0.42999983}
   m_LocalScale: {x: 0.556181, y: 0.16731238, z: 0.19296}
   m_Children: []
-  m_Father: {fileID: 5270764265413001783}
-  m_RootOrder: 1
+  m_Father: {fileID: 5270764263961548376}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &7280359452278868539
 MeshFilter:

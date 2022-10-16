@@ -5,7 +5,8 @@ using UnityEngine.UI;
 public class PlayerController : MonoBehaviour
 {
     public static PlayerController instance;
-    public bool PlayerA = true;
+    public bool PlayerA = false;
+  
     public MovementState state;
     public enum MovementState
     {
@@ -45,7 +46,7 @@ public class PlayerController : MonoBehaviour
     [Header("Health")]
     public int currentHealth;
     public int maxHealth;
-    public Slider healthSlider; 
+    public Slider healthSlider;
 
     [Header("Jetpack")]
     public Transform jetPackTransform;
@@ -55,14 +56,14 @@ public class PlayerController : MonoBehaviour
     public float flyForce;
     public float jetCooldownTimer = 0f;
     public float jetCooldownMaxTimer;
-    
+
     [Header("Fuel")]
     public float maxFuel;
     public float currentFuel;
     public float impulseDecrease;
     public float fuelDecrease;
     public float fuelIncrease;
-    public Slider fuelSlider; 
+    public Slider fuelSlider;
 
     [Header("Ground Check")]
     public Transform groundCheck;
@@ -96,7 +97,7 @@ public class PlayerController : MonoBehaviour
             desiredMoveSpeed = moveSpeed;
         }
 
-       if (!isGrounded && !backDashing)
+        if (!isGrounded && !backDashing)
         {
             state = MovementState.air;
             //desiredMoveSpeed = moveSpeed;
@@ -116,7 +117,7 @@ public class PlayerController : MonoBehaviour
                 //moveSpeed = desiredMoveSpeed;  this behaves weirdly, dk y commenting it out fixes though
             }
         }
-            
+
         lastDesiredMoveSpeed = desiredMoveSpeed;
         lastState = state;
     }
@@ -125,7 +126,7 @@ public class PlayerController : MonoBehaviour
     {
         instance = this;
         currentHealth = maxHealth;
-        healthSlider.maxValue = maxHealth; 
+        healthSlider.maxValue = maxHealth;
         currentFuel = maxFuel;
         fuelSlider.maxValue = maxFuel;
         rb = GetComponent<Rigidbody>();
@@ -186,18 +187,25 @@ public class PlayerController : MonoBehaviour
 
     void ProcessInputs()
     {
-        horizontal = Input.GetAxisRaw("MovementHorizontal");
-        vertical = Input.GetAxisRaw("MovementVertical");
+        if (PlayerA)
+        {
+            horizontal = Input.GetAxisRaw("Horizontal");
+            vertical = Input.GetAxisRaw("Vertical");
+        }
+        else
+        {
+            //controller axis moves mouse axis as well
+            print("set player b to controller movement");
+            horizontal = Input.GetAxis("MovementHorizontal");
+            vertical = Input.GetAxis("MovementVertical");
+        }
 
-        //string test = "horiz";
-        //print($"HORIZ: {horizontal}");
-        //print($"VERT: { vertical}");
-        if (Input.GetKeyDown(KeyCode.Joystick1Button0) && isGrounded && !hasJumped && !usingJettpack) //jump 
+        if (Input.GetKeyDown(jump) && isGrounded && !hasJumped && !usingJettpack) //jump 
         {
             Jump();
         }
 
-        initialLaunch = (Input.GetKeyDown(KeyCode.Joystick1Button4) && !isGrounded && currentFuel > 0); //check for jettpack input
+        initialLaunch = (Input.GetKeyDown(jetPack) && !isGrounded && currentFuel > 0); //check for jettpack input
 
         if (initialLaunch) //jetpack impulse
         {
@@ -208,7 +216,7 @@ public class PlayerController : MonoBehaviour
             jetCooldownTimer = 0;
         }
 
-        if (Input.GetKey(KeyCode.Joystick1Button4) && !isGrounded && currentFuel > 0 && usingJettpack) //jetpack force
+        if (Input.GetKey(jetPack) && !isGrounded && currentFuel > 0 && usingJettpack) //jetpack force
         {
             print("jettpack called");
             Jetpack();
@@ -228,7 +236,9 @@ public class PlayerController : MonoBehaviour
     void MovePlayer()
     {
         if (state == MovementState.dashing) return;
+
         moveDirection = orientation.forward * vertical + orientation.right * horizontal; //use this for jump dir
+
         if (OnSlope() && !exitingSlope) //when moving on slope and not exiting slope
         {
             print("currently on slope");
@@ -242,11 +252,11 @@ public class PlayerController : MonoBehaviour
         {
             rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
         }
-        else if(!isGrounded) //when moving and in air
+        else if (!isGrounded) //when moving and in air
         {
-            rb.AddForce(moveDirection.normalized * moveSpeed * 15f * airMultiplier, ForceMode.Force);  
+            rb.AddForce(moveDirection.normalized * moveSpeed * 15f * airMultiplier, ForceMode.Force);
         }
-        rb.useGravity = !OnSlope();   
+        rb.useGravity = !OnSlope();
     }
     private void Jump()
     {
@@ -280,9 +290,14 @@ public class PlayerController : MonoBehaviour
 
     public void Died()
     {
-        print("Dead");
-        //call game manager to increase score counter. 
-        //decrement current lives.
+        if (PlayerA)
+        {
+            GameManager.instance.playerALives--;
+        }
+        else
+        {
+            GameManager.instance.playerBLives--;
+        }
     }
     private void SpeedControl()
     {
@@ -317,12 +332,12 @@ public class PlayerController : MonoBehaviour
     private IEnumerator LerpSpeed() //dash lerp or momentum behavior
     {
         float time = 0;
-        float difference = Mathf.Abs(desiredMoveSpeed - moveSpeed); 
+        float difference = Mathf.Abs(desiredMoveSpeed - moveSpeed);
         float startValue = moveSpeed;
 
         float boostFactor = speedChangeFactor;
 
-        while(time < difference)
+        while (time < difference)
         {
             moveSpeed = Mathf.Lerp(startValue, desiredMoveSpeed, time / difference);
             time += Time.deltaTime * boostFactor;

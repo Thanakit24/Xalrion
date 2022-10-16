@@ -5,6 +5,10 @@ using TMPro;
 
 public class PlayerWeapons : MonoBehaviour
 {
+    [Header("Inputs")]
+    public KeyCode fire01 = KeyCode.Mouse0;
+    public KeyCode fire02 = KeyCode.Mouse1;
+
     [Header("Rocket")]
     public GameObject rocket;
     public float recoilForce;
@@ -59,12 +63,12 @@ public class PlayerWeapons : MonoBehaviour
 
     private void FiringCheck()
     {
-        if (Input.GetKeyDown(KeyCode.Joystick1Button5) && readyToShoot)
+        if (Input.GetKeyDown(fire01) && readyToShoot)
         {
             Shoot();
         }
 
-        if (Input.GetAxis("XBoxRightTrigger") > 0)
+        if (Input.GetKeyDown(fire02))
         {
             Backdash();
         }
