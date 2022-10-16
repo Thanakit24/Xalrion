@@ -65,6 +65,10 @@ public class PlayerWeapons : MonoBehaviour
 
     private void FiringCheck()
     {
+        if (Time.timeScale == 0)
+        {
+            return;
+        }
         if (Input.GetKeyDown(fire01) && readyToShoot)
         {
             Shoot();

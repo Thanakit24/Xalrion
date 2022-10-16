@@ -29,18 +29,27 @@ public class GameManager : MonoBehaviour
     public int playerB_Lives;
     public int playerB_MaxLives = 3;
 
-    [Header("Respawn")]
-    public GameObject A_respawn;
-    public GameObject B_respawn;
-    public TMP_Text respawnTimer;
-    private float maxRespawnTimer = 3f;
-    public float currentRespawnTimer;
+    //[Header("Respawn A Player")]
+    //public GameObject A_respawn;
+    //public TMP_Text A_respawnTimer;
+    //private float A_maxRespawnTimer = 3;
+    //public float A_currentRespawnTimer;
+    //public bool A_canSpawn = false;
 
-    [Header("Damage Flash")] 
+    //[Header("Respawn B Player")]
+    //public GameObject B_respawn;
+    //public TMP_Text B_respawnTimer;
+    //private float B_maxRespawnTimer = 3;
+    //public float B_currentRespawnTimer;
+
+    [Header("Damage Flash")]
     public GameObject A_damageFlash;
     public GameObject B_damageFlash;
 
-   
+    [Header("GameFinish UI")]
+    public GameObject gameWonUI;
+    public TMP_Text playerText;
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -48,12 +57,14 @@ public class GameManager : MonoBehaviour
     }
     void Start()
     {
+        Time.timeScale = 1f;
+        gameWonUI.SetActive(false);
         A_damageFlash.SetActive(false);
         B_damageFlash.SetActive(false);
         playerA_Lives = playerA_MaxLives;
         playerB_Lives = playerB_MaxLives;
 
-       
+
     }
     // Update is called once per frame
     void Update()
@@ -61,28 +72,32 @@ public class GameManager : MonoBehaviour
         playerA_LivesDisplay.text = $"LIVES: {playerA_Lives}";
         playerB_LivesDisplay.text = $"LIVES: {playerB_Lives}";
 
-        if (playerA_Lives == 0 && playerB_Lives < 0)
+        if (playerA_Lives == 0 || playerB_Lives == 0)
         {
-            //set win ui to active then set who won with string
+            PlayerWon();
+
             //get ref from ping pong game
         }
 
-        if (playerB_Lives == 0 && playerA_Lives < 0)
-        {
-            //display player A won
-        }
-        
     }
-   
-    public void A_PlayRespawn()
+    public void PlayerWon()
     {
-        currentRespawnTimer = maxRespawnTimer;
-        currentRespawnTimer -= Time.deltaTime;
-        A_respawn.SetActive(true);
-       
+        if (playerA_Lives == 0 && playerB_Lives != 0)
+        {
+            playerText.text = $"BLUE WON";
+            //textTest.text = "<color=#E0E300>This is golden!</color>";
+            //$"{playerAScore} - {playerBScore}";
+        }
+        else
+        {
+            playerText.text = $"RED WON";
+
+        }
+        Time.timeScale = 0f;
+        gameWonUI.SetActive(true);
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
     }
-
-
 
     //cringe shit no cap
     public void A_DamageFlash()

@@ -78,7 +78,8 @@ public class PlayerController : MonoBehaviour
     private RaycastHit slopeHit;
     public bool exitingSlope;
 
-    [Header("")]
+    [Header("Temp")]
+    public bool readyToSpawn;
     public ParticleSystem jetPackParticle;
     void StateHandler()  //changed currentSpeed to desiredMovespeed for dashing
     {
@@ -175,13 +176,7 @@ public class PlayerController : MonoBehaviour
         ProcessInputs();
         SpeedControl();
         StateHandler();
-
-        //if (damageFlash.color.a > 0)
-        //{
-        //    var color = damageFlash.color;
-        //    color.a -= 0.01f;
-        //    damageFlash.color = color;
-        //}
+       
 
         if (currentHealth <= 0)
         {
@@ -413,6 +408,6 @@ public class PlayerController : MonoBehaviour
     {
         return Vector3.ProjectOnPlane(moveDirection, slopeHit.normal).normalized;
     }
-   
+
 
 }

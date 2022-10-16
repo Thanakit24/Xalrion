@@ -232,6 +232,7 @@ MonoBehaviour:
   groundDrag: 5
   maxSlopeAngle: 40
   exitingSlope: 0
+  readyToSpawn: 0
   jetPackParticle: {fileID: 3505311162809557580}
 --- !u!114 &2175237351255713200
 MonoBehaviour:
