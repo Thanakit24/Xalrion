@@ -9,9 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2175237351146045798}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: Jettpack
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -43,9 +43,9 @@ GameObject:
   - component: {fileID: 2175237351224448951}
   - component: {fileID: 2175237351224448936}
   - component: {fileID: 2175237351224448937}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: Rocket
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -139,7 +139,7 @@ GameObject:
   - component: {fileID: 2175237351255713201}
   - component: {fileID: 2175237351255713202}
   - component: {fileID: 2175237351255713200}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: PlayerB
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -191,6 +191,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PlayerA: 0
+  cam: {fileID: 2175237352403003636}
   state: 0
   jump: 331
   jetPack: 334
@@ -246,7 +247,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fire01: 335
   fire02: 337
-  rocket: {fileID: 8937822956089399610, guid: 336e8b1156fb6434c822d603d607e0f7, type: 3}
+  rocket: {fileID: 8937822956089399610, guid: e560ddb1ea26bb34d8704ab06c7307cd, type: 3}
   recoilForce: 10
   shootForce: 30
   readyToShoot: 1
@@ -282,7 +283,7 @@ GameObject:
   - component: {fileID: 2175237351451585617}
   - component: {fileID: 2175237351451585618}
   - component: {fileID: 2175237351451585619}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: Capsule
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -375,9 +376,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2175237351534932543}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: shootPoint
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -405,9 +406,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2175237351651383589}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: CameraPos
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -435,9 +436,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2175237351724708529}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: GroundCheck
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -466,9 +467,9 @@ GameObject:
   m_Component:
   - component: {fileID: 2175237351943841334}
   - component: {fileID: 2175237351943841335}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: CameraHolder
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -510,9 +511,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2175237351951938012}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: Orientation
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -545,9 +546,9 @@ GameObject:
   - component: {fileID: 2175237352403003638}
   - component: {fileID: 2175237352403003635}
   - component: {fileID: 2175237352403003636}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: Main Camera
-  m_TagString: MainCamera
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -598,7 +599,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 1015
+    m_Bits: 6135
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -659,6 +660,8 @@ MonoBehaviour:
   sensY: 300
   orientation: {fileID: 2175237351951938012}
   playerA: 0
+  xRotation: 0
+  yRotation: 0
 --- !u!1 &2175237352437017075
 GameObject:
   m_ObjectHideFlags: 0
@@ -668,9 +671,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2175237352437017074}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: Checks
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -704,10 +707,9 @@ GameObject:
   - component: {fileID: 6845349770573970086}
   - component: {fileID: 3603850217121426879}
   - component: {fileID: 4591721252150917999}
-  - component: {fileID: 395228680592247795}
-  m_Layer: 10
+  m_Layer: 11
   m_Name: Face
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -753,7 +755,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100002, guid: b451a052397f03c4f8a04d915d1c0492, type: 3}
+  - {fileID: 2100000, guid: 7377b70de3629f943a37609d3e758400, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -775,19 +777,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &395228680592247795
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3379422244342212118}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &2175237351818771395
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -798,6 +787,10 @@ PrefabInstance:
     - target: {fileID: 3353672327121869193, guid: 8a5d4cdfbb1f50c4a9710e38f8b1cdb6, type: 3}
       propertyPath: m_Name
       value: JettpackFlames
+      objectReference: {fileID: 0}
+    - target: {fileID: 3353672327121869193, guid: 8a5d4cdfbb1f50c4a9710e38f8b1cdb6, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 3353672327121869193, guid: 8a5d4cdfbb1f50c4a9710e38f8b1cdb6, type: 3}
       propertyPath: m_IsActive
@@ -875,6 +868,10 @@ PrefabInstance:
       propertyPath: InitialModule.startSize.minScalar
       value: 0.1
       objectReference: {fileID: 0}
+    - target: {fileID: 3353672327585186182, guid: 8a5d4cdfbb1f50c4a9710e38f8b1cdb6, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 6143637022730504919, guid: 8a5d4cdfbb1f50c4a9710e38f8b1cdb6, type: 3}
       propertyPath: looping
       value: 0
@@ -902,6 +899,10 @@ PrefabInstance:
     - target: {fileID: 6143637022730504919, guid: 8a5d4cdfbb1f50c4a9710e38f8b1cdb6, type: 3}
       propertyPath: InitialModule.startLifetime.minScalar
       value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7402228812173230149, guid: 8a5d4cdfbb1f50c4a9710e38f8b1cdb6, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 8798055016891757530, guid: 8a5d4cdfbb1f50c4a9710e38f8b1cdb6, type: 3}
       propertyPath: m_LocalPosition.x

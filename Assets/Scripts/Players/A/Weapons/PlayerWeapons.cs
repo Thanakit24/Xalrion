@@ -111,20 +111,14 @@ public class PlayerWeapons : MonoBehaviour
 
     private void BackdashShot()
     {
-        Ray ray = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
         RaycastHit hit;
 
-        Vector3 targetPoint;
-        if (Physics.Raycast(ray, out hit))
+        if (Physics.Raycast(cam.transform.position, cam.transform.forward, out hit, 1000f, hitLayer))
         {
             targetPoint = hit.point;
-        }
-        else
-        {
-            targetPoint = ray.GetPoint(75);
+            //print(hit.transform.name);
         }
         Vector3 direction = targetPoint - shootPoint.position;
-        //currentFuel -= decreaseMultiplier * Time.deltaTime;
 
         GameObject currentBullet = Instantiate(backdashExplosion, shootPoint.position, Quaternion.LookRotation(direction)); 
         //currentBullet.transform.forward = direction.normalized;

@@ -6,7 +6,7 @@ public class PlayerController : MonoBehaviour
 {
     public static PlayerController instance;
     public bool PlayerA = false;
-  
+    public PlayerCam cam;
     public MovementState state;
     public enum MovementState
     {
@@ -124,6 +124,7 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        OnSpawn();
         instance = this;
         currentHealth = maxHealth;
         healthSlider.maxValue = maxHealth;
@@ -175,6 +176,13 @@ public class PlayerController : MonoBehaviour
         SpeedControl();
         StateHandler();
 
+        //if (damageFlash.color.a > 0)
+        //{
+        //    var color = damageFlash.color;
+        //    color.a -= 0.01f;
+        //    damageFlash.color = color;
+        //}
+
         if (currentHealth <= 0)
         {
             Died();
@@ -218,7 +226,7 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetKey(jetPack) && !isGrounded && currentFuel > 0 && usingJettpack) //jetpack force
         {
-            print("jettpack called");
+            //print("jettpack called");
             Jetpack();
         }
         else
@@ -286,18 +294,59 @@ public class PlayerController : MonoBehaviour
     public void TakeDamage(int damage)
     {
         currentHealth -= damage;
+        if (PlayerA)
+        {
+            GameManager.instance.A_DamageFlash();
+        }
+        else
+        {
+            GameManager.instance.B_DamageFlash();
+        }
     }
 
     public void Died()
     {
         if (PlayerA)
         {
-            GameManager.instance.playerALives--;
+            var spawnPos = GameManager.instance.playerASpawnpoint.position;
+            var player = GameManager.instance.playerA;
+            GameManager.instance.playerA_Lives--;
+            Destroy(this.gameObject);
+            var playerGameObject = Instantiate(player, spawnPos, Quaternion.identity);
+            playerGameObject.GetComponent<PlayerController>().Respawn(fuelSlider, healthSlider);
         }
         else
         {
-            GameManager.instance.playerBLives--;
+            var spawnPos = GameManager.instance.playerBSpawnpoint.position;
+            var player = GameManager.instance.playerB;
+            GameManager.instance.playerB_Lives--;
+            Destroy(this.gameObject);
+            var playerGameObject = Instantiate(player, spawnPos, Quaternion.identity);
+            playerGameObject.GetComponent<PlayerController>().Respawn(fuelSlider, healthSlider);
         }
+    }
+    public void OnSpawn()
+    {
+        if (PlayerA)
+        {
+            var spawnPos = GameManager.instance.playerASpawnpoint;
+            transform.position = spawnPos.position;
+            cam.xRotation = 0;
+            cam.yRotation = spawnPos.localEulerAngles.y;
+        }
+        else
+        {
+            var spawnPos = GameManager.instance.playerBSpawnpoint;
+            transform.position = spawnPos.position;
+            cam.xRotation = 0;
+            cam.yRotation = spawnPos.localEulerAngles.y;
+        }
+    }
+    public void Respawn(Slider fuel, Slider health)
+    {
+        fuelSlider = fuel;
+        healthSlider = health;
+
     }
     private void SpeedControl()
     {
@@ -364,5 +413,6 @@ public class PlayerController : MonoBehaviour
     {
         return Vector3.ProjectOnPlane(moveDirection, slopeHit.normal).normalized;
     }
+   
 
 }
