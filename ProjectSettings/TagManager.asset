@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - Opponent
+  - PlayerB
+  - PlayerA
   layers:
   - Default
   - TransparentFX
@@ -13,12 +15,12 @@ TagManager:
   - Water
   - UI
   - Ground
-  - Rocket
-  - Player
+  - RocketA
+  - PlayerA
+  - PlayerB
   - FaceA
-  - 
-  - 
-  - 
+  - FaceB
+  - RocketB
   - 
   - 
   - 

@@ -8,16 +8,18 @@ public class PlayerRocket_Explosion : MonoBehaviour
     public float power = 10.0f;
     public float upwardForce;
     public GameObject rocketExplosionEffect;
+    public LayerMask hitMask;
     public LayerMask blockExplosionLayer;
 
     public int maxDamage;
     public int minDamage;
-   
-    private void OnCollisionEnter(Collision collision)
+
+    private void OnTriggerEnter(Collider other)
     {
+        //print(other.gameObject);
         Vector3 explosionPos = transform.position;
         Instantiate(rocketExplosionEffect, transform.position, transform.rotation);
-        Collider[] colliders = Physics.OverlapSphere(explosionPos, radius);
+        Collider[] colliders = Physics.OverlapSphere(explosionPos, radius, hitMask);
         
         foreach (Collider hit in colliders)
         {
@@ -28,20 +30,25 @@ public class PlayerRocket_Explosion : MonoBehaviour
             {
                 //rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
                 float distance = Vector3.Distance(explosionPos, hit.transform.position);
-                if (!Physics.Raycast(explosionPos, (hit.transform.position - explosionPos).normalized, distance, blockExplosionLayer.value))
+                if (!Physics.Raycast(explosionPos, (hit.transform.position - explosionPos).normalized, distance, blockExplosionLayer.value)) //if raycast doesnt hit the wall
                 {
+                    Debug.DrawLine(explosionPos, (hit.transform.position - explosionPos).normalized, Color.red);
                     rb.AddExplosionForce(power, explosionPos, radius, upwardForce, ForceMode.Impulse);
 
-                    if (rb.gameObject.CompareTag("Player"))
-                    {
-                        float damage = RemapRange(Mathf.Clamp(distance, 0f, radius), 0f, radius, maxDamage, minDamage);
-                        PlayerController.instance.TakeDamage(Mathf.RoundToInt(damage));
-                        print(damage);
-                    }
+                    //do damage to the hitmask layer (player layer)
+                    float damage = RemapRange(Mathf.Clamp(distance, 0f, radius), 0f, radius, maxDamage, minDamage);
+                    rb.GetComponent<PlayerController>().TakeDamage(Mathf.RoundToInt(damage));
+                    print(damage);
+              
                 }
             }
         }
         Destroy(gameObject);
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        print(collision.gameObject.name);
     }
 
     public static float RemapRange(float value, float inputA, float inputB, float outputA, float outputB)

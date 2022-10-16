@@ -195,7 +195,7 @@ public class PlayerController : MonoBehaviour
         else
         {
             //controller axis moves mouse axis as well
-            print("set player b to controller movement");
+            //print("set player b to controller movement");
             horizontal = Input.GetAxis("MovementHorizontal");
             vertical = Input.GetAxis("MovementVertical");
         }

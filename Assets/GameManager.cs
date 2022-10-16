@@ -17,8 +17,8 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         instance = this;
-        playerA = playerASpawnpoint;
-        playerB = playerBSpawnpoint;
+        playerA.position = playerASpawnpoint.position;
+        playerB.position = playerBSpawnpoint.position;
     }
 
     // Update is called once per frame
