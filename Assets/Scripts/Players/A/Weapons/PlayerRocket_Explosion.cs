@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerARocket_Explosion : MonoBehaviour
+public class PlayerRocket_Explosion : MonoBehaviour
 {
     public float radius = 5.0f;
     public float power = 10.0f;
@@ -35,7 +35,7 @@ public class PlayerARocket_Explosion : MonoBehaviour
                     if (rb.gameObject.CompareTag("Player"))
                     {
                         float damage = RemapRange(Mathf.Clamp(distance, 0f, radius), 0f, radius, maxDamage, minDamage);
-                        PlayerAController.instance.TakeDamage(Mathf.RoundToInt(damage));
+                        PlayerController.instance.TakeDamage(Mathf.RoundToInt(damage));
                         print(damage);
                     }
                 }

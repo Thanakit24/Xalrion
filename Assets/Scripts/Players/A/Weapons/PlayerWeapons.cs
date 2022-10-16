@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class PlayerAWeapons : MonoBehaviour
+public class PlayerWeapons : MonoBehaviour
 {
     [Header("Rocket")]
     public GameObject rocket;
@@ -36,13 +36,13 @@ public class PlayerAWeapons : MonoBehaviour
  
 
     //Ref
-    private PlayerAController player;
+    private PlayerController player;
 
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        player = GetComponent<PlayerAController>();
+        player = GetComponent<PlayerController>();
         readyToShoot = true;
     }
 

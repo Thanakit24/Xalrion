@@ -2,9 +2,10 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerAController : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
-    public static PlayerAController instance;
+    public static PlayerController instance;
+    public bool PlayerA = true;
     public MovementState state;
     public enum MovementState
     {
@@ -13,6 +14,9 @@ public class PlayerAController : MonoBehaviour
         air
     }
     private MovementState lastState;
+    [Header("Inputs")]
+    public KeyCode jump = KeyCode.Space;
+    public KeyCode jetPack = KeyCode.Space;
 
     [Header("Movement")]
     public Transform orientation;
@@ -73,6 +77,7 @@ public class PlayerAController : MonoBehaviour
     private RaycastHit slopeHit;
     public bool exitingSlope;
 
+    [Header("")]
     public ParticleSystem jetPackParticle;
     void StateHandler()  //changed currentSpeed to desiredMovespeed for dashing
     {
