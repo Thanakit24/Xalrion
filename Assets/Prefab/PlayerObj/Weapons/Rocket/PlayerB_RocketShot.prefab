@@ -135,5 +135,6 @@ MonoBehaviour:
   blockExplosionLayer:
     serializedVersion: 2
     m_Bits: 64
+  wallRaycastOffset: 0.45
   maxDamage: 50
   minDamage: 10

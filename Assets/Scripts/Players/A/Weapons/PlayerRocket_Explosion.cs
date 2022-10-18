@@ -10,7 +10,7 @@ public class PlayerRocket_Explosion : MonoBehaviour
     public GameObject rocketExplosionEffect;
     public LayerMask hitMask;
     public LayerMask blockExplosionLayer;
-
+    public float wallRaycastOffset;
     public int maxDamage;
     public int minDamage;
 
@@ -30,9 +30,11 @@ public class PlayerRocket_Explosion : MonoBehaviour
             {
                 //rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
                 float distance = Vector3.Distance(explosionPos, hit.transform.position);
-                if (!Physics.Raycast(explosionPos, (hit.transform.position - explosionPos).normalized, distance, blockExplosionLayer.value)) //if raycast doesnt hit the wall
+                Vector3 shootDir = (hit.transform.position - explosionPos).normalized;
+                Vector3 startPos = explosionPos - shootDir * wallRaycastOffset;
+                if (!Physics.Raycast(startPos, shootDir, out RaycastHit hitInfo, distance + wallRaycastOffset, blockExplosionLayer)) //if raycast doesnt hit the wall
                 {
-                    Debug.DrawLine(explosionPos, (hit.transform.position - explosionPos).normalized, Color.red);
+                    Debug.DrawLine(explosionPos, explosionPos + shootDir * distance, Color.red, 100f);
                     rb.AddExplosionForce(power, explosionPos, radius, upwardForce, ForceMode.Impulse);
 
                     //do damage to the hitmask layer (player layer)

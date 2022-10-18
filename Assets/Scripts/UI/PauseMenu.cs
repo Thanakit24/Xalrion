@@ -33,7 +33,7 @@ public class PauseMenu : MonoBehaviour
     }
     public void Resume()
     {
-        print("Resume called");
+        //print("Resume called");
         pauseMenuUI.SetActive(false);
         playerA_UI.SetActive(true);
         playerB_UI.SetActive(true);

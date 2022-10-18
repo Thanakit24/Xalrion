@@ -69,6 +69,11 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
+
         playerA_LivesDisplay.text = $"LIVES: {playerA_Lives}";
         playerB_LivesDisplay.text = $"LIVES: {playerB_Lives}";
 
@@ -84,13 +89,15 @@ public class GameManager : MonoBehaviour
     {
         if (playerA_Lives == 0 && playerB_Lives != 0)
         {
-            playerText.text = $"BLUE WON";
+            playerText.color = new Color32(255, 76, 76, 255);
+            playerText.text = $"RED PLAYER WON";
             //textTest.text = "<color=#E0E300>This is golden!</color>";
             //$"{playerAScore} - {playerBScore}";
         }
         else
         {
-            playerText.text = $"RED WON";
+            playerText.color = new Color32(0, 149, 255, 255);
+            playerText.text = $"BLUE PLAYER WON";
 
         }
         Time.timeScale = 0f;

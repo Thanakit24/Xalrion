@@ -259,7 +259,7 @@ MonoBehaviour:
   hitLayer:
     serializedVersion: 2
     m_Bits: 64
-  backdashExplosion: {fileID: 8937822956089399610, guid: 5a21822e211125d4b841b6bb0921ce76, type: 3}
+  backdashExplosion: {fileID: 8937822956089399610, guid: 963e5eb8ff4da674d80c217c145f7ad5, type: 3}
   orientation: {fileID: 2175237351951938012}
   backDashForce: 170
   upBackDashForce: 25

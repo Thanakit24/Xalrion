@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 3773852297453204647}
   - component: {fileID: -6227729949025494533}
   m_Layer: 7
-  m_Name: BackdashShot
+  m_Name: PlayerA_BackdashShot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -129,3 +129,7 @@ MonoBehaviour:
   power: 10
   upwardForce: 0
   backDashExplosionEffect: {fileID: 1581546879607055117, guid: 17fcd47e550c72e4dbe56fffa2866908, type: 3}
+  hitMask:
+    serializedVersion: 2
+    m_Bits: 512
+  damage: 70

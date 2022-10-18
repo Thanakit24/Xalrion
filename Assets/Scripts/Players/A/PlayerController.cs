@@ -202,7 +202,7 @@ public class PlayerController : MonoBehaviour
             horizontal = Input.GetAxis("MovementHorizontal");
             vertical = Input.GetAxis("MovementVertical");
         }
-
+      
         if (Input.GetKeyDown(jump) && isGrounded && !hasJumped && !usingJettpack) //jump 
         {
             Jump();
