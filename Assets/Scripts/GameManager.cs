@@ -83,7 +83,6 @@ public class GameManager : MonoBehaviour
 
             //get ref from ping pong game
         }
-
     }
     public void PlayerWon()
     {

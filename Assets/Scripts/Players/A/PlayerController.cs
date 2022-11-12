@@ -2,19 +2,20 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : StateMachine
 {
     public static PlayerController instance;
     public bool PlayerA = false;
     public PlayerCam cam;
-    public MovementState state;
-    public enum MovementState
+    public PlayerStates state;
+    public enum PlayerStates
     {
         walking,
         dashing,
         air
     }
-    private MovementState lastState;
+    private PlayerStates lastState;
+
     [Header("Inputs")]
     public KeyCode jump = KeyCode.Space;
     public KeyCode jetPack = KeyCode.Space;
@@ -81,31 +82,27 @@ public class PlayerController : MonoBehaviour
     [Header("Temp")]
     public bool readyToSpawn;
     public ParticleSystem jetPackParticle;
-    void StateHandler()  //changed currentSpeed to desiredMovespeed for dashing
+
+
+    void StateUpdater()  //changed currentSpeed to desiredMovespeed for dashing
     {
         if (backDashing)
         {
-            //rb.drag = 0;
-            state = MovementState.dashing;
-            rb.drag = 0;
-            desiredMoveSpeed = dashSpeed;
-            speedChangeFactor = dashSpeedChangeFactor;
+            StateEntry(PlayerStates.dashing);
         }
-
         if (isGrounded && !backDashing)
         {
-            state = MovementState.walking;
-            desiredMoveSpeed = moveSpeed;
+            StateEntry(PlayerStates.walking);
         }
-
         if (!isGrounded && !backDashing)
         {
-            state = MovementState.air;
+            StateEntry(PlayerStates.air);
             //desiredMoveSpeed = moveSpeed;
         }
 
+
         bool desiredMoveSpeedChanged = desiredMoveSpeed != lastDesiredMoveSpeed;  //keeping momentum condition
-        if (lastState == MovementState.dashing) keepMomentum = true;
+        if (lastState == PlayerStates.dashing) keepMomentum = true;
         if (desiredMoveSpeedChanged)
         {
             if (keepMomentum)
@@ -122,6 +119,42 @@ public class PlayerController : MonoBehaviour
         lastDesiredMoveSpeed = desiredMoveSpeed;
         lastState = state;
     }
+    private void StateEntry(PlayerStates nextState) // OnEnter state logic, this only runs once when changing to a state that you currently are not in
+    {
+        if (state != nextState)
+        {
+            switch (nextState)
+            {
+                case PlayerStates.walking:
+                    break;
+                case PlayerStates.dashing:
+                    // play dashing sound
+                    break;
+                case PlayerStates.air:
+                    break;
+            }
+            state = nextState;
+        }
+    }
+    private void StateHandler()
+    {
+        switch (state)
+        {
+            case PlayerStates.air:
+                break;
+
+            case PlayerStates.walking:
+                desiredMoveSpeed = moveSpeed;
+                break;
+
+            case PlayerStates.dashing:
+                rb.drag = 0;
+                desiredMoveSpeed = dashSpeed;
+                speedChangeFactor = dashSpeedChangeFactor;
+
+                break;
+        }
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -133,18 +166,19 @@ public class PlayerController : MonoBehaviour
         fuelSlider.maxValue = maxFuel;
         rb = GetComponent<Rigidbody>();
         jetPackParticle.gameObject.SetActive(false);
+
+        //StartCoroutine(Dies);
     }
 
     // Update is called once per frame
     void Update()
     {
-        //print(exitingSlope);
         healthSlider.value = currentHealth;
         fuelSlider.value = currentFuel;
         isGrounded = Physics.CheckSphere(groundCheck.position, groundCheckRadius, groundLayerMask);
         if (isGrounded)
         {
-            if (state == MovementState.walking || !lastGrounded)
+            if (state == PlayerStates.walking || !lastGrounded)
             {
                 hasJumped = false;
                 rb.drag = groundDrag;
@@ -156,6 +190,7 @@ public class PlayerController : MonoBehaviour
             rb.drag = 0;
             JumpFall();
         }
+
         lastGrounded = isGrounded;
 
         if (!usingJettpack && currentFuel < maxFuel) //if not doing anyth and current fuel isnt full
@@ -175,8 +210,8 @@ public class PlayerController : MonoBehaviour
         }
         ProcessInputs();
         SpeedControl();
+        StateUpdater();
         StateHandler();
-       
 
         if (currentHealth <= 0)
         {
@@ -238,7 +273,7 @@ public class PlayerController : MonoBehaviour
     //}
     void MovePlayer()
     {
-        if (state == MovementState.dashing) return;
+        if (state == PlayerStates.dashing) return;
 
         moveDirection = orientation.forward * vertical + orientation.right * horizontal; //use this for jump dir
 
@@ -271,7 +306,7 @@ public class PlayerController : MonoBehaviour
     }
     private void JumpFall()
     {
-        if (rb.velocity.y <= -0.1 && !usingJettpack && state != MovementState.dashing)
+        if (rb.velocity.y <= -0.1 && !usingJettpack && state != PlayerStates.dashing)
         {
             //print("Jump fall used");
             rb.AddForce(Vector3.down * fallJumpGravity, ForceMode.Impulse);
@@ -408,6 +443,12 @@ public class PlayerController : MonoBehaviour
     {
         return Vector3.ProjectOnPlane(moveDirection, slopeHit.normal).normalized;
     }
-
+    private IEnumerator Dies(float waitTime)
+    {
+        //ui pops up
+        yield return new WaitForSeconds(waitTime);
+       
+        //Died();
+    }
 
 }
