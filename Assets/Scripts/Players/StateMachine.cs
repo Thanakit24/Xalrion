@@ -27,7 +27,7 @@ public class StateMachine : MonoBehaviour
     }
     protected virtual void FixedUpdate()
     {
-        currentState.FixedUpdate();
+        currentState.OnFixedUpdate();
     }
     protected virtual void OnCollisionEnter2D(Collision2D collision)
     {
@@ -43,6 +43,8 @@ public class StateMachine : MonoBehaviour
         newState.OnEnter();
         currentState = newState;
     }
+
+    
 
     public void Die()
     {

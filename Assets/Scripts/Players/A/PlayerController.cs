@@ -75,7 +75,8 @@ public class PlayerController : StateMachine
     public float groundDrag;
 
     [Header("SlopeHandling")]
-    public float maxSlopeAngle;
+
+    private float maxSlopeAngle;
     private RaycastHit slopeHit;
     public bool exitingSlope;
 

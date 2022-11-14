@@ -38,7 +38,7 @@ public class BaseState
             }
         }
     }
-    public virtual void FixedUpdate()
+    public virtual void OnFixedUpdate()
     {
     }
 
