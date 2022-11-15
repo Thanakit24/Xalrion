@@ -131,8 +131,8 @@ public class PlayerWeapons : MonoBehaviour
     }
     private void Backdash()
     {
-        if (dashcoolDown > 0 || player.currentFuel <= 0) return;
-        else dashcoolDown = dashcoolDownMax;
+        if (dashcoolDown > 0 || player.currentFuel <= 0) return; //check if cooldown is on and check if player current fuel more than 0
+        else dashcoolDown = dashcoolDownMax; //set cooldown if there isnt a cooldown already
         player.usingJettpack = false;
         player.backDashing = true;
         player.maxYSpeed = maxDashYSpeed;

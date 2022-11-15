@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerStatemachine : StateMachine
 {
@@ -18,6 +19,7 @@ public class PlayerStatemachine : StateMachine
     public Vector3 moveDirection;
     public float moveSpeed;
     public float airMultiplier;
+    public float maxYSpeed;
 
     [Header("Jump")]
     public float jumpForce;
@@ -25,10 +27,12 @@ public class PlayerStatemachine : StateMachine
     public float fallJumpGravity;
 
     [Header("Jetpack")]
-    public float currentFuel;
     public float impulseForce;
     public float impulseDecrease;
     public float flyForce;
+    public float jetCooldownTimer;
+    public float jetCooldownMaxTimer;
+    public bool usingJetpack = false;
     
     [Header("GroundCheck")]
     public bool isGrounded;
@@ -40,6 +44,45 @@ public class PlayerStatemachine : StateMachine
     public float maxSlopeAngle;
     private RaycastHit slopeHit;
 
+    [Header("Health")]
+    public Slider healthSlider;
+    public float currentHealth;
+    public float maxHealth;
+
+    [Header("Fuel")]
+    public Slider fuelSlider;
+    public float currentFuel;
+    public float maxFuel;
+    public float fuelIncrease;
+    public float fuelDecrease;
+
+    [Header("Rocket")]
+
+    [HideInInspector] public Vector3 targetPoint;
+    public Camera cam;
+    public Transform shootPoint;
+    public LayerMask hitLayer;
+    public GameObject rocketPrefab;
+    [HideInInspector] public GameObject fireRocket;
+    public GameObject backDashShotPrefab;
+    [HideInInspector] public GameObject backDashShot;
+    public float recoilForce;
+    public float shootForce;
+    public bool readyToShoot;
+    public float coolDown;
+    public bool allowInvoke = false;
+
+    [Header("Backdash")]
+    public GameObject backdashExplosion;
+    //public float pushBackForce;
+    public float backDashForce;
+    public float upBackDashForce;
+    public float dashcoolDown;
+    public float dashcoolDownMax;
+    public float dashDuration;
+    public float maxDashYSpeed;
+    public float dereaseFuel;
+
     [Header("Particles")]
     public ParticleSystem jetPackParticle;
 
@@ -49,41 +92,58 @@ public class PlayerStatemachine : StateMachine
     {
         base.Awake();
         rb = GetComponent<Rigidbody>();
-
     }
     public override BaseState DefaultState()
     {
         GroundMoveState groundMoveState = new GroundMoveState(this);
         return groundMoveState;
     }
+    protected override void Start()
+    {
+        base.Start();
+        currentHealth = maxHealth;
+        healthSlider.maxValue = maxHealth;
+        currentFuel = maxFuel;
+        fuelSlider.maxValue = maxFuel;
+        jetPackParticle.gameObject.SetActive(false);
+    }
     // Update is called once per frame
     protected override void Update()
     {
         base.Update();
         ProcessInputs();
+        healthSlider.value = currentHealth;
+        fuelSlider.value = currentFuel;
         isGrounded = Physics.CheckSphere(groundCheck.position, groundCheckRadius, groundLayerMask);
-        
-        //if (isGrounded)
-        //{
-        //         //do if state = moving later
-        //    {
-        //        //hasJumped = false;
-              
-        //        //exitingSlope = false;
-        //    }
-        //}
-        //else
-        //{
-        //    rb.drag = 0;
 
-        //    //if (rb.velocity.y <= -0.1 && //!usingJettpack && state != PlayerStates.dashing)
-        //    //{
-        //    //    //print("Jump fall used");
-        //    //    //rb.AddForce(Vector3.down * fallJumpGravity, ForceMode.Impulse);
-        //    //}
-        //}
+        if (allowInvoke)
+        {
+            Invoke("ResetShot", coolDown);
+            allowInvoke = false;
+        }
+        Invoke(nameof(ResetBackDash), dashDuration);
+
+        if (dashcoolDown > 0)
+        {
+            dashcoolDown -= Time.deltaTime;
+        }
+
+        if (!(currentState is JetpackState) && currentFuel < maxFuel) //if not doing anyth and current fuel isnt full
+        {
+            jetCooldownTimer += Time.deltaTime; //start countodown
+
+            if (jetCooldownTimer >= jetCooldownMaxTimer) //when countdown reaches, do behavior below
+            {
+                jetCooldownTimer = jetCooldownMaxTimer;
+                currentFuel += fuelIncrease * Time.deltaTime;
+
+                if (currentFuel >= maxFuel)
+                {
+                    jetCooldownTimer = 0;
+                }
+            }
+        }
     }
-
     protected override void FixedUpdate()
     {
         base.FixedUpdate();
@@ -110,21 +170,49 @@ public class PlayerStatemachine : StateMachine
             ChangeState(jumpState);
         }
 
-        if (Input.GetKeyDown(jetPack) &&  currentState is FallState)
+        if (Input.GetKeyDown(jetPack) &&  currentState is FallState && currentFuel > 0)
         {
             ChangeState(new LaunchState(this));
         }
 
-        if (Input.GetKey(jetPack) && currentState is FallState)
+        if (Input.GetKey(jetPack) && currentState is LaunchState && !isGrounded)
         {
-            ChangeState(new JetpackState(this));
+            if (currentFuel > 0)
+            {
+                print("Set jetpack state");
+                ChangeState(new JetpackState(this));
+            }
         }
-        else
+        
+        if (!Input.GetKey(jetPack) && currentState is JetpackState && !isGrounded)
         {
             ChangeState(new FallState(this));
         }
+
+        if (Input.GetKeyDown(KeyCode.Mouse0) && readyToShoot)
+        {
+            ChangeState(new RocketState(this));
+            fireRocket = Instantiate(rocketPrefab, shootPoint.position, Quaternion.identity);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Mouse1) && currentFuel > 0 && dashcoolDown <= 0)
+        {
+            ChangeState(new BackdashState(this));
+            backDashShot = Instantiate(backDashShotPrefab, shootPoint.position, Quaternion.identity);
+        }
+    }
+    private void ResetShot()
+    {
+        readyToShoot = true;
+        allowInvoke = true;
     }
 
+    private void ResetBackDash()
+    {
+        //backDashing = false;
+        maxYSpeed = 0;
+        //rb.useGravity = true;
+    }
     public bool OnSlope()
     {
         //RaycastHit slopeHit;
@@ -144,4 +232,5 @@ public class PlayerStatemachine : StateMachine
     {
         return Vector3.ProjectOnPlane(moveDirection, slopeHit.normal).normalized;
     }
+   
 }
