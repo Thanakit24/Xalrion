@@ -9,7 +9,7 @@ public class DeathGround : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            collision.gameObject.GetComponent<PlayerController>().TakeDamage(20);
+            collision.gameObject.GetComponent<PlayerStatemachine>().TakeDamage(20);
             collision.gameObject.GetComponent<Rigidbody>().AddForce(Vector3.up * 9f, ForceMode.Impulse);
         }
     }

@@ -57,9 +57,8 @@ public class PlayerStatemachine : StateMachine
     public float fuelDecrease;
 
     [Header("Rocket")]
-
-    [HideInInspector] public Vector3 targetPoint;
     public Camera cam;
+    [HideInInspector] public Vector3 targetPoint;
     public Transform shootPoint;
     public LayerMask hitLayer;
     public GameObject rocketPrefab;
@@ -212,6 +211,18 @@ public class PlayerStatemachine : StateMachine
         //backDashing = false;
         maxYSpeed = 0;
         //rb.useGravity = true;
+    }
+    public void TakeDamage(int damage)
+    {
+        currentHealth -= damage;
+        if (PlayerA)
+        {
+            GameManager.instance.A_DamageFlash();
+        }
+        else
+        {
+            GameManager.instance.B_DamageFlash();
+        }
     }
     public bool OnSlope()
     {

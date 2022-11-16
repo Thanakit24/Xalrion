@@ -190,6 +190,7 @@ public class LaunchState : AirMoveState
         Debug.Log("Launch Jetpack");
         if (_pc.currentFuel > 0)
         {
+            _pc.jetCooldownTimer = 0f;
             _pc.rb.velocity = new Vector3(_pc.rb.velocity.x, 0f, _pc.rb.velocity.z);
             _pc.rb.AddForce(Vector2.up * _pc.impulseForce, ForceMode.Impulse);
             _pc.currentFuel -= _pc.impulseDecrease;
@@ -230,7 +231,7 @@ public class RocketState : BasePlayerState
 {
     public RocketState(PlayerStatemachine pc): base(pc) 
     {
-        duration = 0.01f;
+        duration = 0.5f;
     }
 
     public override void OnUpdate()
@@ -259,7 +260,7 @@ public class BackdashState : BasePlayerState
 {
     public BackdashState(PlayerStatemachine pc): base(pc)
     {
-        duration = 0.05f;
+        duration = 0.5f;
     }
 
     private Vector3 delayedForceToApply;
@@ -323,3 +324,11 @@ public class BackdashState : BasePlayerState
     }
 }
 
+public class DeadState : BasePlayerState
+{
+    public DeadState(PlayerStatemachine pc) : base(pc)
+    {
+
+    }
+  
+}
