@@ -39,7 +39,7 @@ public class PlayerRocket_Explosion : MonoBehaviour
 
                     //do damage to the hitmask layer (player layer)
                     float damage = RemapRange(Mathf.Clamp(distance, 0f, radius), 0f, radius, maxDamage, minDamage);
-                    rb.GetComponent<PlayerController>().TakeDamage(Mathf.RoundToInt(damage));
+                    rb.GetComponent<PlayerStatemachine>().TakeDamage(Mathf.RoundToInt(damage));
                     print(damage);
               
                 }

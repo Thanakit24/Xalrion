@@ -146,7 +146,7 @@ public class JumpState : AirMoveState
     {
         base.OnEnter();
         _pc.bufferedState = new FallState(_pc);
-        Debug.Log("Jump");
+        //Debug.Log("Jump");
         //_pc.exitingSlope = true;
         _pc.rb.drag = 0f;
         _pc.rb.velocity = new Vector3(_pc.rb.velocity.x, 0f, _pc.rb.velocity.z);
@@ -187,7 +187,7 @@ public class LaunchState : AirMoveState
     public override void OnEnter()
     {
         base.OnEnter();
-        Debug.Log("Launch Jetpack");
+        //Debug.Log("Launch Jetpack");
         if (_pc.currentFuel > 0)
         {
             _pc.jetCooldownTimer = 0f;
@@ -210,7 +210,7 @@ public class JetpackState : AirMoveState
     public override void OnFixedUpdate()
     {
         base.OnFixedUpdate();
-        Debug.Log("in Jettpack, using");
+        //Debug.Log("in Jettpack, using");
         _pc.rb.useGravity = false;
         _pc.currentFuel -= _pc.fuelDecrease * Time.deltaTime;
         _pc.jetPackParticle.gameObject.SetActive(true); //temp use
@@ -239,7 +239,7 @@ public class RocketState : BasePlayerState
         _pc.rb.velocity = new Vector3(_pc.rb.velocity.x, 0f, _pc.rb.velocity.z);
         _pc.readyToShoot = false;
         RaycastHit hit;
-        Debug.Log("Rocket state");
+        //Debug.Log("Rocket state");
         if (Physics.Raycast(_pc.cam.transform.position, _pc.cam.transform.forward, out hit, 1000f, _pc.hitLayer))
         {
             _pc.targetPoint = hit.point;

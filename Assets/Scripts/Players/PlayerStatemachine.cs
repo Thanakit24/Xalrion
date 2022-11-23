@@ -10,7 +10,9 @@ public class PlayerStatemachine : StateMachine
     [Header("Inputs")]
     public KeyCode jump = KeyCode.Space;
     public KeyCode jetPack = KeyCode.Space;
-  
+    public KeyCode Rocket = KeyCode.Space;
+    public KeyCode backDashshot = KeyCode.Space;
+
     [Header("Movement")]
     public Transform orientation;
     public float groundDrag;
@@ -188,13 +190,13 @@ public class PlayerStatemachine : StateMachine
             ChangeState(new FallState(this));
         }
 
-        if (Input.GetKeyDown(KeyCode.Mouse0) && readyToShoot)
+        if (Input.GetKeyDown(Rocket) && readyToShoot)
         {
             ChangeState(new RocketState(this));
             fireRocket = Instantiate(rocketPrefab, shootPoint.position, Quaternion.identity);
         }
 
-        if (Input.GetKeyDown(KeyCode.Mouse1) && currentFuel > 0 && dashcoolDown <= 0)
+        if (Input.GetKeyDown(backDashshot) && currentFuel > 0 && dashcoolDown <= 0)
         {
             ChangeState(new BackdashState(this));
             backDashShot = Instantiate(backDashShotPrefab, shootPoint.position, Quaternion.identity);
@@ -215,6 +217,7 @@ public class PlayerStatemachine : StateMachine
     public void TakeDamage(int damage)
     {
         currentHealth -= damage;
+        Debug.Log("take damage");
         if (PlayerA)
         {
             GameManager.instance.A_DamageFlash();
