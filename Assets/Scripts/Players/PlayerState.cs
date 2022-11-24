@@ -146,6 +146,7 @@ public class JumpState : AirMoveState
     {
         base.OnEnter();
         _pc.bufferedState = new FallState(_pc);
+        _pc.jumpedInput = 0f;
         //Debug.Log("Jump");
         //_pc.exitingSlope = true;
         _pc.rb.drag = 0f;
@@ -187,7 +188,7 @@ public class LaunchState : AirMoveState
     public override void OnEnter()
     {
         base.OnEnter();
-        //Debug.Log("Launch Jetpack");
+        Debug.Log("Launch Jetpack");
         if (_pc.currentFuel > 0)
         {
             _pc.jetCooldownTimer = 0f;
@@ -195,6 +196,12 @@ public class LaunchState : AirMoveState
             _pc.rb.AddForce(Vector2.up * _pc.impulseForce, ForceMode.Impulse);
             _pc.currentFuel -= _pc.impulseDecrease;
         }
+    }
+
+    public override void OnExit()
+    {
+        base.OnExit();
+        //_pc.launchInput = 0f;
     }
 
     public override void OnUpdate()
@@ -210,7 +217,7 @@ public class JetpackState : AirMoveState
     public override void OnFixedUpdate()
     {
         base.OnFixedUpdate();
-        //Debug.Log("in Jettpack, using");
+        Debug.Log("in Jettpack, using");
         _pc.rb.useGravity = false;
         _pc.currentFuel -= _pc.fuelDecrease * Time.deltaTime;
         _pc.jetPackParticle.gameObject.SetActive(true); //temp use
@@ -234,6 +241,11 @@ public class RocketState : BasePlayerState
         duration = 0.5f;
     }
 
+    public override void OnEnter()
+    {
+        base.OnEnter();
+        _pc.fireInput = 0f;
+    }
     public override void OnUpdate()
     {
         _pc.rb.velocity = new Vector3(_pc.rb.velocity.x, 0f, _pc.rb.velocity.z);
@@ -263,6 +275,12 @@ public class BackdashState : BasePlayerState
         duration = 0.5f;
     }
 
+    public override void OnEnter()
+    {
+        base.OnEnter();
+        _pc.backDashShotInput = 0f;
+        //Debug.Log("set backdash input to 0");
+    }
     private Vector3 delayedForceToApply;
     public override void OnUpdate()
     {

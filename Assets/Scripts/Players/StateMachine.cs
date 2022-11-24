@@ -44,8 +44,6 @@ public class StateMachine : MonoBehaviour
         currentState = newState;
     }
 
-    
-
     public void Die()
     {
         deathEvent?.Invoke();
