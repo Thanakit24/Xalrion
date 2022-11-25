@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerController : StateMachine
+public class PlayerController : MonoBehaviour
 {
     public static PlayerController instance;
     public bool PlayerA = false;
@@ -377,7 +377,6 @@ public class PlayerController : StateMachine
     {
         fuelSlider = fuel;
         healthSlider = health;
-
     }
     private void SpeedControl()
     {

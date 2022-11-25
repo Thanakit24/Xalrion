@@ -73,6 +73,14 @@ public class @InputMaster : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Join"",
+                    ""type"": ""Button"",
+                    ""id"": ""8a22f699-6765-426c-a13b-9bd54d2ccbf2"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -312,7 +320,7 @@ public class @InputMaster : IInputActionCollection, IDisposable
                     ""id"": ""45db2a66-78b3-40f0-a808-08ce5158308a"",
                     ""path"": ""<Mouse>/delta"",
                     ""interactions"": """",
-                    ""processors"": """",
+                    ""processors"": ""ScaleVector2(x=0.3,y=0.3)"",
                     ""groups"": ""Keyboard and mouse"",
                     ""action"": ""Camera"",
                     ""isComposite"": false,
@@ -350,6 +358,66 @@ public class @InputMaster : IInputActionCollection, IDisposable
                     ""action"": ""Launch"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ce96ba4e-c50b-4c7e-beca-eadd0d047ed7"",
+                    ""path"": ""<Keyboard>/anyKey"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard and mouse"",
+                    ""action"": ""Join"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b939e63c-d888-49fd-bd2b-64349088c7e2"",
+                    ""path"": ""<Gamepad>/start"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Join"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""UI"",
+            ""id"": ""e6f87ddd-6773-4de0-aef4-78d3ce361930"",
+            ""actions"": [
+                {
+                    ""name"": ""Pause"",
+                    ""type"": ""Button"",
+                    ""id"": ""5ff3fce1-14f1-4608-9201-f7502163bccd"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""a3cd1e30-3d03-4f72-b047-dba6bb9d4f8e"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard and mouse"",
+                    ""action"": ""Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9b590629-d206-46e7-aa84-f6ee0f979c61"",
+                    ""path"": ""<Gamepad>/start"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -358,12 +426,29 @@ public class @InputMaster : IInputActionCollection, IDisposable
         {
             ""name"": ""Keyboard and mouse"",
             ""bindingGroup"": ""Keyboard and mouse"",
-            ""devices"": []
+            ""devices"": [
+                {
+                    ""devicePath"": ""<Keyboard>"",
+                    ""isOptional"": false,
+                    ""isOR"": false
+                },
+                {
+                    ""devicePath"": ""<Mouse>"",
+                    ""isOptional"": false,
+                    ""isOR"": false
+                }
+            ]
         },
         {
             ""name"": ""Gamepad"",
             ""bindingGroup"": ""Gamepad"",
-            ""devices"": []
+            ""devices"": [
+                {
+                    ""devicePath"": ""<Gamepad>"",
+                    ""isOptional"": false,
+                    ""isOR"": false
+                }
+            ]
         }
     ]
 }");
@@ -376,6 +461,10 @@ public class @InputMaster : IInputActionCollection, IDisposable
         m_Player_Jetpack = m_Player.FindAction("Jetpack", throwIfNotFound: true);
         m_Player_Fire = m_Player.FindAction("Fire", throwIfNotFound: true);
         m_Player_Fire2 = m_Player.FindAction("Fire2", throwIfNotFound: true);
+        m_Player_Join = m_Player.FindAction("Join", throwIfNotFound: true);
+        // UI
+        m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
+        m_UI_Pause = m_UI.FindAction("Pause", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -432,6 +521,7 @@ public class @InputMaster : IInputActionCollection, IDisposable
     private readonly InputAction m_Player_Jetpack;
     private readonly InputAction m_Player_Fire;
     private readonly InputAction m_Player_Fire2;
+    private readonly InputAction m_Player_Join;
     public struct PlayerActions
     {
         private @InputMaster m_Wrapper;
@@ -443,6 +533,7 @@ public class @InputMaster : IInputActionCollection, IDisposable
         public InputAction @Jetpack => m_Wrapper.m_Player_Jetpack;
         public InputAction @Fire => m_Wrapper.m_Player_Fire;
         public InputAction @Fire2 => m_Wrapper.m_Player_Fire2;
+        public InputAction @Join => m_Wrapper.m_Player_Join;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -473,6 +564,9 @@ public class @InputMaster : IInputActionCollection, IDisposable
                 @Fire2.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFire2;
                 @Fire2.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFire2;
                 @Fire2.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFire2;
+                @Join.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJoin;
+                @Join.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJoin;
+                @Join.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJoin;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -498,10 +592,46 @@ public class @InputMaster : IInputActionCollection, IDisposable
                 @Fire2.started += instance.OnFire2;
                 @Fire2.performed += instance.OnFire2;
                 @Fire2.canceled += instance.OnFire2;
+                @Join.started += instance.OnJoin;
+                @Join.performed += instance.OnJoin;
+                @Join.canceled += instance.OnJoin;
             }
         }
     }
     public PlayerActions @Player => new PlayerActions(this);
+
+    // UI
+    private readonly InputActionMap m_UI;
+    private IUIActions m_UIActionsCallbackInterface;
+    private readonly InputAction m_UI_Pause;
+    public struct UIActions
+    {
+        private @InputMaster m_Wrapper;
+        public UIActions(@InputMaster wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Pause => m_Wrapper.m_UI_Pause;
+        public InputActionMap Get() { return m_Wrapper.m_UI; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(UIActions set) { return set.Get(); }
+        public void SetCallbacks(IUIActions instance)
+        {
+            if (m_Wrapper.m_UIActionsCallbackInterface != null)
+            {
+                @Pause.started -= m_Wrapper.m_UIActionsCallbackInterface.OnPause;
+                @Pause.performed -= m_Wrapper.m_UIActionsCallbackInterface.OnPause;
+                @Pause.canceled -= m_Wrapper.m_UIActionsCallbackInterface.OnPause;
+            }
+            m_Wrapper.m_UIActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @Pause.started += instance.OnPause;
+                @Pause.performed += instance.OnPause;
+                @Pause.canceled += instance.OnPause;
+            }
+        }
+    }
+    public UIActions @UI => new UIActions(this);
     private int m_KeyboardandmouseSchemeIndex = -1;
     public InputControlScheme KeyboardandmouseScheme
     {
@@ -529,5 +659,10 @@ public class @InputMaster : IInputActionCollection, IDisposable
         void OnJetpack(InputAction.CallbackContext context);
         void OnFire(InputAction.CallbackContext context);
         void OnFire2(InputAction.CallbackContext context);
+        void OnJoin(InputAction.CallbackContext context);
+    }
+    public interface IUIActions
+    {
+        void OnPause(InputAction.CallbackContext context);
     }
 }

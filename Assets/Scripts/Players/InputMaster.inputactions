@@ -60,6 +60,14 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "Join",
+                    "type": "Button",
+                    "id": "8a22f699-6765-426c-a13b-9bd54d2ccbf2",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -299,7 +307,7 @@
                     "id": "45db2a66-78b3-40f0-a808-08ce5158308a",
                     "path": "<Mouse>/delta",
                     "interactions": "",
-                    "processors": "",
+                    "processors": "ScaleVector2(x=0.3,y=0.3)",
                     "groups": "Keyboard and mouse",
                     "action": "Camera",
                     "isComposite": false,
@@ -337,6 +345,66 @@
                     "action": "Launch",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ce96ba4e-c50b-4c7e-beca-eadd0d047ed7",
+                    "path": "<Keyboard>/anyKey",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard and mouse",
+                    "action": "Join",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b939e63c-d888-49fd-bd2b-64349088c7e2",
+                    "path": "<Gamepad>/start",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "Join",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "UI",
+            "id": "e6f87ddd-6773-4de0-aef4-78d3ce361930",
+            "actions": [
+                {
+                    "name": "Pause",
+                    "type": "Button",
+                    "id": "5ff3fce1-14f1-4608-9201-f7502163bccd",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "a3cd1e30-3d03-4f72-b047-dba6bb9d4f8e",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard and mouse",
+                    "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9b590629-d206-46e7-aa84-f6ee0f979c61",
+                    "path": "<Gamepad>/start",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }
@@ -345,12 +413,29 @@
         {
             "name": "Keyboard and mouse",
             "bindingGroup": "Keyboard and mouse",
-            "devices": []
+            "devices": [
+                {
+                    "devicePath": "<Keyboard>",
+                    "isOptional": false,
+                    "isOR": false
+                },
+                {
+                    "devicePath": "<Mouse>",
+                    "isOptional": false,
+                    "isOR": false
+                }
+            ]
         },
         {
             "name": "Gamepad",
             "bindingGroup": "Gamepad",
-            "devices": []
+            "devices": [
+                {
+                    "devicePath": "<Gamepad>",
+                    "isOptional": false,
+                    "isOR": false
+                }
+            ]
         }
     ]
 }

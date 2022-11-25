@@ -8,14 +8,16 @@ using System;
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
+    public PlayerStatemachine playerA;
+    public PlayerStatemachine playerB;
 
     [Header("Player Spawns")]
     public Transform playerASpawnpoint;
     public Transform playerBSpawnpoint;
 
     [Header("Player Prefabs")]
-    public GameObject playerA;
-    public GameObject playerB;
+    public GameObject playerApref;
+    public GameObject playerBpref;
 
     [Header("PlayerALives")]
     public TMP_Text playerA_LivesDisplay;

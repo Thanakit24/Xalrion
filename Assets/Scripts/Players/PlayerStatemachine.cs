@@ -7,12 +7,13 @@ using UnityEngine.InputSystem;
 public class PlayerStatemachine : StateMachine
 {
     public bool PlayerA;
-    
+
     [Header("Inputs")]
-    public KeyCode jump = KeyCode.Space;
-    public KeyCode jetPack = KeyCode.Space;
-    public KeyCode Rocket = KeyCode.Space;
-    public KeyCode backDashshot = KeyCode.Space;
+    //public KeyCode jump = KeyCode.Space;
+    //public KeyCode jetPack = KeyCode.Space;
+    //public KeyCode Rocket = KeyCode.Space;
+    //public KeyCode backDashshot = KeyCode.Space;
+    InputActionAsset asset;
     public InputMaster playerInputs;
 
     [Header("Movement")]
@@ -26,14 +27,12 @@ public class PlayerStatemachine : StateMachine
     public float maxYSpeed;
 
     [Header("Jump")]
-    [HideInInspector] public float jumpedInput;//temp bool bcuz readvalue only returns float not bool, applies to other input variables too
     public float jumpForce;
     public float maxAirVelocity;
     public float fallJumpGravity;
 
     [Header("Jetpack")]
-    [HideInInspector] public float launchInput; //temp bool bcuz readvalue only returns float not bool, applies to other input variables too
-    [HideInInspector] public bool jetpackInput;
+    //[HideInInspector] public bool jetpackInput;
     public float impulseForce;
     public float impulseDecrease;
     public float flyForce;
@@ -64,13 +63,11 @@ public class PlayerStatemachine : StateMachine
     public float fuelDecrease;
 
     [Header("Rocket")]
-    [HideInInspector] public float fireInput;  //temp bool bcuz readvalue only returns float not bool, applies to other input variables too
-    public Camera cam;
     [HideInInspector] public Vector3 targetPoint;
     public Transform shootPoint;
     public LayerMask hitLayer;
-    public GameObject rocketPrefab;
-    [HideInInspector] public GameObject fireRocket;
+    public PlayerRocket_Explosion rocketPrefab;
+    public PlayerRocket_Explosion homingRocketPrefab;
     public GameObject backDashShotPrefab;
     [HideInInspector] public GameObject backDashShot;
     public float recoilForce;
@@ -78,10 +75,8 @@ public class PlayerStatemachine : StateMachine
     public bool readyToShoot;
     public float coolDown;
     public bool allowInvoke = false;
-
     [Header("Backdash")]
     public GameObject backdashExplosion;
-    public float backDashShotInput;
     //public float pushBackForce;
     public float backDashForce;
     public float upBackDashForce;
@@ -94,7 +89,15 @@ public class PlayerStatemachine : StateMachine
     [Header("Particles")]
     public ParticleSystem jetPackParticle;
 
-    public Rigidbody rb;
+    [HideInInspector] public Rigidbody rb;
+
+    [Header("References")]
+    public Camera cam;
+    public PlayerCam camScript;
+    public List<float> buffs = new List<float>();
+
+    [HideInInspector]public BuffManager buffManager;
+
    
     public override BaseState DefaultState()
     {
@@ -106,6 +109,7 @@ public class PlayerStatemachine : StateMachine
     {
         base.Awake();
         rb = GetComponent<Rigidbody>();
+        buffManager = GetComponent<BuffManager>();
         //var input = GetComponent<PlayerInput>();
         playerInputs = new InputMaster();
     }
@@ -121,20 +125,20 @@ public class PlayerStatemachine : StateMachine
     private void OnEnable()
     {
         playerInputs.Enable();
+
+        //print("set to player a input");
         playerInputs.Player.Move.performed += ctx => SetMove(ctx);
         playerInputs.Player.Jump.performed += ctx => OnJump(ctx);
         playerInputs.Player.Launch.performed += ctx => OnLaunch(ctx);
-        //playerInputs.Player.Jetpack.performed += OnJetpack;
-        //playerInputs.Player.Jetpack.performed += ctx => OnJetpack(ctx);
         playerInputs.Player.Fire.performed += ctx => OnFireRocket(ctx);
         playerInputs.Player.Fire2.performed += ctx => OnBackdashShot(ctx);
-        
     }
     private void OnDisable()
     {
         //playerInputs.Player.Move.performed -= SetMove;
         playerInputs.Disable();
     }
+    #region Inputs
     public void SetMove(InputAction.CallbackContext ctx)
     {
         var inputDir = ctx.ReadValue<Vector2>();
@@ -145,9 +149,9 @@ public class PlayerStatemachine : StateMachine
 
     public void OnJump(InputAction.CallbackContext ctx)
     {
-        jumpedInput = ctx.ReadValue<float>();
-        jumpedInput = 0.1f;
-        if (jumpedInput > 0 && currentState is GroundMoveState)
+        var jumpedInput = ctx.ReadValue<float>();
+        
+        if (jumpedInput > 0.1f && currentState is GroundMoveState)
         {
             ChangeState(new JumpState(this));
         }
@@ -155,9 +159,8 @@ public class PlayerStatemachine : StateMachine
 
     public void OnLaunch(InputAction.CallbackContext ctx)
     {
-        launchInput = ctx.ReadValue<float>();
-        launchInput = 0.1f;
-        if (launchInput > 0 && currentState is FallState && currentFuel > 0)
+        var launchInput = ctx.ReadValue<float>();
+        if (launchInput > 0.1f && currentState is FallState && currentFuel > 0)
         {
             ChangeState(new LaunchState(this));
         }
@@ -179,30 +182,50 @@ public class PlayerStatemachine : StateMachine
     }
     public void OnFireRocket(InputAction.CallbackContext ctx)
     {
-        fireInput = ctx.ReadValue<float>();
-        fireInput = 0.1f;
-        if (fireInput > 0 && readyToShoot)
+        var fireInput = ctx.ReadValue<float>();
+        if  (fireInput > 0 && readyToShoot)
         {
-            Debug.Log("Fire rocket");
-            ChangeState(new RocketState(this));
-            fireRocket = Instantiate(rocketPrefab, shootPoint.position, Quaternion.identity);
+            //Debug.Log("Fire rocket");
+            rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+            readyToShoot = false;
+            RaycastHit hit;
+            //Debug.Log("Rocket state");
+            if (Physics.Raycast(cam.transform.position, cam.transform.forward, out hit, 1000f, hitLayer))
+            {
+                targetPoint = hit.point;
+                //print(hit.transform.name);
+            }
+            Vector3 direction = targetPoint - shootPoint.position;
+            var prefabToInstance = buffManager.HasBuff(AssetDb.instance.homingRocketBuff) ? homingRocketPrefab : rocketPrefab;
+
+            var currentRocket = Instantiate(prefabToInstance, shootPoint.position, Quaternion.identity);
+            currentRocket.transform.forward = direction.normalized;
+            var homing = currentRocket.GetComponent<HomingRocket>();
+            homing.target = OppositePerson().transform;
+            rb.AddForce(-cam.transform.forward * recoilForce, ForceMode.Impulse);
+
+           
         }
+    }
+    private PlayerStatemachine OppositePerson()
+    {
+        return PlayerA ? GameManager.instance.playerB : GameManager.instance.playerA;
     }
     public void OnBackdashShot(InputAction.CallbackContext ctx)
     {
-        backDashShotInput = ctx.ReadValue<float>();
-        backDashShotInput = 0.1f;
+        var backDashShotInput = ctx.ReadValue<float>();
         if (backDashShotInput > 0 && currentFuel > 0 && dashcoolDown  <= 0)
         {
             ChangeState(new BackdashState(this));
             backDashShot = Instantiate(backDashShotPrefab, shootPoint.position, Quaternion.identity);
         }
     }
+#endregion
     // Update is called once per frame
     protected override void Update()
     {
         base.Update();
-        ProcessInputs();
+        //ProcessInputs();
         healthSlider.value = currentHealth;
         fuelSlider.value = currentFuel;
         isGrounded = Physics.CheckSphere(groundCheck.position, groundCheckRadius, groundLayerMask);
@@ -236,95 +259,11 @@ public class PlayerStatemachine : StateMachine
         }
 
         OnJetpackHeld();
-        //float jetpackInput = playerInputs.Player.Jetpack.ReadValue<float>();
-        //if (jetpackInput != 0f && currentFuel > 0 && currentState is FallState)
-        //{
-        //    //Debug.Log("Jetpack input held");
-        //    ChangeState(new JetpackState(this));
-        //}
-
-        //if (jetpackInput == 0 && currentState is JetpackState)
-        //{
-        //    //Debug.Log("Jetpack input let go");
-        //    ChangeState(new FallState(this));
-        //}
-
-
-        //if (jetpackInput == 0f && currentState is JetpackState && !isGrounded)
-        //{
-        //    ChangeState(new FallState(this));
-        //}
-        //if (jetpackInput)
-        //{
-        //    Debug.Log("input held jetpakc");
-        //}
-        //if (jetpackInput && currentFuel > 0 && currentState is LaunchState)
-        //{
-        //    ChangeState(new JetpackState(this));
-        //}
-
-        //if (!jetpackInput && currentState is JetpackState && !isGrounded)
-        //{
-        //    ChangeState(new FallState(this));
-        //}
-
     }
     protected override void FixedUpdate()
     {
         base.FixedUpdate();
         moveDirection = orientation.forward * vertical + orientation.right * horizontal;
-    }
-    private void ProcessInputs()
-    {
-        //if (PlayerA)
-        //{
-        //    horizontal = Input.GetAxisRaw("Horizontal");
-        //    vertical = Input.GetAxisRaw("Vertical");
-        //}
-        //else
-        //{
-        //    //controller axis moves mouse axis as well
-        //    //print("set player b to controller movement");
-        //    horizontal = Input.GetAxis("MovementHorizontal");
-        //    vertical = Input.GetAxis("MovementVertical");
-        //}
-
-        //if (Input.GetKeyDown(jump) && currentState is GroundMoveState) //jump 
-        //{
-        //    var jumpState = new JumpState(this);
-        //    ChangeState(jumpState);
-        //}
-
-        //if (Input.GetKeyDown(jetPack) &&  currentState is FallState && currentFuel > 0)
-        //{
-        //    ChangeState(new LaunchState(this));
-        //}
-
-        //if (Input.GetKey(jetPack) && currentState is LaunchState && !isGrounded)
-        //{
-        //    if (currentFuel > 0)
-        //    {
-        //        print("Set jetpack state");
-        //        ChangeState(new JetpackState(this));
-        //    }
-        //}
-        
-        //if (!Input.GetKey(jetPack) && currentState is JetpackState && !isGrounded)
-        //{
-        //    ChangeState(new FallState(this));
-        //}
-
-        //if (Input.GetKeyDown(Rocket) && readyToShoot)
-        //{
-        //    ChangeState(new RocketState(this));
-        //    fireRocket = Instantiate(rocketPrefab, shootPoint.position, Quaternion.identity);
-        //}
-
-        //if (Input.GetKeyDown(backDashshot) && currentFuel > 0 && dashcoolDown <= 0)
-        //{
-        //    ChangeState(new BackdashState(this));
-        //    backDashShot = Instantiate(backDashShotPrefab, shootPoint.position, Quaternion.identity);
-        //}
     }
     private void ResetShot()
     {
@@ -340,6 +279,11 @@ public class PlayerStatemachine : StateMachine
     }
     public void TakeDamage(int damage)
     {
+        if (buffManager.HasBuff(AssetDb.instance.invincibleBuff))
+        {
+            //print("has invincible buff");
+            return;
+        }
         currentHealth -= damage;
         Debug.Log("take damage");
         if (PlayerA)
@@ -350,6 +294,28 @@ public class PlayerStatemachine : StateMachine
         {
             GameManager.instance.B_DamageFlash();
         }
+    }
+    public void OnSpawn()
+    {
+        if (PlayerA)
+        {
+            var spawnPos = GameManager.instance.playerASpawnpoint;
+            transform.position = spawnPos.position;
+            camScript.xRotation = 0;
+            camScript.yRotation = spawnPos.localEulerAngles.y;
+        }
+        else
+        {
+            var spawnPos = GameManager.instance.playerBSpawnpoint;
+            transform.position = spawnPos.position;
+            camScript.xRotation = 0;
+            camScript.yRotation = spawnPos.localEulerAngles.y;
+        }
+    }
+    public void Respawn(Slider fuel, Slider health)
+    {
+        fuelSlider = fuel;
+        healthSlider = health;
     }
     public bool OnSlope()
     {

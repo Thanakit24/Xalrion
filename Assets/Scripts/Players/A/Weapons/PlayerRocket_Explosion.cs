@@ -14,6 +14,23 @@ public class PlayerRocket_Explosion : MonoBehaviour
     public int maxDamage;
     public int minDamage;
 
+    public float maxSpeed = 10f;
+    public Rigidbody rb;
+
+    private void Start()
+    {
+        rb = GetComponent<Rigidbody>();
+        Vector3 forceDirection = transform.forward * maxSpeed;
+        rb.velocity = forceDirection;
+        //rb.AddForce(forceDirection, ForceMode.Impulse);
+    }
+    private void FixedUpdate()
+    {
+        //Clamping velocity
+        if (rb.velocity.magnitude > maxSpeed)
+            rb.velocity = rb.velocity.normalized * maxSpeed;
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         //print(other.gameObject);
@@ -48,18 +65,13 @@ public class PlayerRocket_Explosion : MonoBehaviour
         Destroy(gameObject);
     }
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        print(collision.gameObject.name);
-    }
-
     public static float RemapRange(float value, float inputA, float inputB, float outputA, float outputB)
     {
         return (value - inputA) / (inputB - inputA) * (outputB - outputA) + outputA;
     }
     private void OnDrawGizmos()
     {
-        print("draw sphere gizmos");
+        //print("draw sphere gizmos");
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, radius);
     }

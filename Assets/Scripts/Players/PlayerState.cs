@@ -36,7 +36,6 @@ public class GroundMoveState : BasePlayerState
         base.OnEnter();
         originalDrag = _pc.rb.drag;
         _pc.rb.drag = _pc.groundDrag;
-        _pc.jetPackParticle.gameObject.SetActive(false);
     }
     public override void OnUpdate()
     {
@@ -146,7 +145,7 @@ public class JumpState : AirMoveState
     {
         base.OnEnter();
         _pc.bufferedState = new FallState(_pc);
-        _pc.jumpedInput = 0f;
+        //_pc.jumpedInput = 0f;
         //Debug.Log("Jump");
         //_pc.exitingSlope = true;
         _pc.rb.drag = 0f;
@@ -166,7 +165,6 @@ public class FallState : AirMoveState
     public override void OnEnter()
     {
         base.OnEnter();
-        _pc.jetPackParticle.gameObject.SetActive(false);
     }
     public override void OnUpdate()
     {
@@ -188,13 +186,16 @@ public class LaunchState : AirMoveState
     public override void OnEnter()
     {
         base.OnEnter();
-        Debug.Log("Launch Jetpack");
+        //Debug.Log("Launch Jetpack");
         if (_pc.currentFuel > 0)
         {
             _pc.jetCooldownTimer = 0f;
             _pc.rb.velocity = new Vector3(_pc.rb.velocity.x, 0f, _pc.rb.velocity.z);
             _pc.rb.AddForce(Vector2.up * _pc.impulseForce, ForceMode.Impulse);
-            _pc.currentFuel -= _pc.impulseDecrease;
+            if (!_pc.buffManager.HasBuff(AssetDb.instance.unlimitedFuelBuff))
+            {
+                _pc.currentFuel -= _pc.impulseDecrease;
+            }
         }
     }
 
@@ -214,13 +215,21 @@ public class JetpackState : AirMoveState
 {
     public JetpackState(PlayerStatemachine pc) : base(pc) { }
 
+    public override void OnEnter()
+    {
+        base.OnEnter();
+        _pc.jetPackParticle.gameObject.SetActive(true);
+    }
     public override void OnFixedUpdate()
     {
         base.OnFixedUpdate();
-        Debug.Log("in Jettpack, using");
+        //Debug.Log("in Jettpack, using");
         _pc.rb.useGravity = false;
-        _pc.currentFuel -= _pc.fuelDecrease * Time.deltaTime;
-        _pc.jetPackParticle.gameObject.SetActive(true); //temp use
+        
+        if (!_pc.buffManager.HasBuff(AssetDb.instance.unlimitedFuelBuff))
+        {
+            _pc.currentFuel -= _pc.fuelDecrease * Time.deltaTime;
+        }
         Vector3 flyDir = _pc.orientation.forward * _pc.vertical + _pc.orientation.right * _pc.horizontal + _pc.orientation.up; //getting the player's direction
         _pc.rb.AddForce(flyDir * _pc.flyForce * Time.deltaTime, ForceMode.Force);
     }
@@ -233,41 +242,13 @@ public class JetpackState : AirMoveState
             _pc.ChangeState(new FallState(_pc));
         }
     }
-}
-public class RocketState : BasePlayerState
-{
-    public RocketState(PlayerStatemachine pc): base(pc) 
-    {
-        duration = 0.5f;
-    }
 
-    public override void OnEnter()
+    public override void OnExit()
     {
-        base.OnEnter();
-        _pc.fireInput = 0f;
-    }
-    public override void OnUpdate()
-    {
-        _pc.rb.velocity = new Vector3(_pc.rb.velocity.x, 0f, _pc.rb.velocity.z);
-        _pc.readyToShoot = false;
-        RaycastHit hit;
-        //Debug.Log("Rocket state");
-        if (Physics.Raycast(_pc.cam.transform.position, _pc.cam.transform.forward, out hit, 1000f, _pc.hitLayer))
-        {
-            _pc.targetPoint = hit.point;
-            //print(hit.transform.name);
-        }
-        Vector3 direction = _pc.targetPoint - _pc.shootPoint.position;
-        GameObject currentBullet = _pc.fireRocket;
-        currentBullet.transform.forward = direction.normalized;
-        Vector3 forceDirection = currentBullet.transform.forward * _pc.shootForce;
-
-        currentBullet.GetComponent<Rigidbody>().AddForce(forceDirection, ForceMode.Impulse);
-        _pc.rb.AddForce(-_pc.cam.transform.forward * _pc.recoilForce, ForceMode.Impulse);
-        _pc.ChangeState(new FallState(_pc));
+        base.OnExit();
+        _pc.jetPackParticle.gameObject.SetActive(false);
     }
 }
-
 public class BackdashState : BasePlayerState
 {
     public BackdashState(PlayerStatemachine pc): base(pc)
@@ -278,7 +259,7 @@ public class BackdashState : BasePlayerState
     public override void OnEnter()
     {
         base.OnEnter();
-        _pc.backDashShotInput = 0f;
+        //_pc.backDashShotInput = 0f;
         //Debug.Log("set backdash input to 0");
     }
     private Vector3 delayedForceToApply;
