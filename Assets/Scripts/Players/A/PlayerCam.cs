@@ -13,50 +13,65 @@ public class PlayerCam : MonoBehaviour
     public bool playerA = false;
     public float xRotation;
     public float yRotation;
-    private InputMaster playerInput;
+    public InputMaster playerInput;
     Vector2 lastMousePos;
     Vector2 lastGamepadPos;
+    [HideInInspector] public Vector2 lookDir;
     // Start is called before the first frame update
     void Start()
     {
-        playerInput = GetComponentInParent<PlayerStatemachine>().playerInputs;
         //playerInput.Player.Camera.performed += ctx => OnLook(ctx);
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        InputSystem.onDeviceChange += ChangeController;
+        //InputSystem.onDeviceChange += ChangeController;
         //InputSystem.onDeviceCommand +=
     }
 
+    private void OnEnable()
+    {
+        playerInput.Enable();
+
+        //print("set to player a input");
+        //playerInputs.Player.Move.performed += ctx => OnMove(ctx);
+        //playerInputs.Player.Jump.performed += ctx => OnJump(ctx);
+        //playerInputs.Player.Launch.performed += ctx => OnLaunch(ctx);
+        //playerInputs.Player.Fire.performed += ctx => OnFireRocket(ctx);
+        //playerInputs.Player.Fire2.performed += ctx => OnBackdashShot(ctx);
+    }
     private void OnDestroy()
     {
-        InputSystem.onDeviceChange -= ChangeController;
+        //InputSystem.onDeviceChange -= ChangeController;
     }
-    void ChangeController(InputDevice device, InputDeviceChange deviceChange)
-    {
-        switch (deviceChange)
-        {
-            case InputDeviceChange.Added:
-                print(device as Gamepad);
-                if(device as Gamepad != null)
-                {
-                    InputSystem.DisableDevice(Mouse.current);
-                    //playerInput.Player.Move.Disable();
-                }
-                break;
+    //void ChangeController(InputDevice device, InputDeviceChange deviceChange)
+    //{
+    //    switch (deviceChange)
+    //    {
+    //        case InputDeviceChange.Added:
+    //            print(device as Gamepad);
+    //            if(device as Gamepad != null)
+    //            {
+    //                InputSystem.DisableDevice(Mouse.current);
+    //                //playerInput.Player.Move.Disable();
+    //            }
+    //            break;
 
-            case InputDeviceChange.Removed:
-                if(device as Gamepad != null)
-                {
-                    InputSystem.EnableDevice(Mouse.current);
-                }
-                break;
+    //        case InputDeviceChange.Removed:
+    //            if(device as Gamepad != null)
+    //            {
+    //                InputSystem.EnableDevice(Mouse.current);
+    //            }
+    //            break;
 
-        }
-    }
+    //    }
+    //}
+    //void OnLook(InputValue value)
+    //{
+    //    lookDir = value.Get<Vector2>();
+    //}
     void Update()
     {   
-        var lookDir = playerInput.Player.Camera.ReadValue<Vector2>();
+        // lookDir = playerInput.Player.Camera.ReadValue<Vector2>();
         
         //var lookMouseDir = lastMousePos - Mouse.current.position.ReadValue();
         //Debug.Log(Mouse.current.position.ReadValue());

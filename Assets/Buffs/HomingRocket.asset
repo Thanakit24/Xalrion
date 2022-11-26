@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: HomingRocket
   m_EditorClassIdentifier: 
   duration: 0
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: cbd8e696c605ef34cb994f759a136648, type: 3}
   description: 

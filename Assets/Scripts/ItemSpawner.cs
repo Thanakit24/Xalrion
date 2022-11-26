@@ -28,7 +28,7 @@ public class ItemSpawner : MonoBehaviour
                 //spawn shit randomly, random items, random spawn locations 
                 print("run func");
                 itemSpawned = true;
-                var randomItem = Random.Range(0, 1);
+                var randomItem = Random.Range(0, 4);
                 var randomSpawn = Random.Range(0, 1);
                 //Debug.Log(randomItem);
                 //Debug.Log(randomSpawn);

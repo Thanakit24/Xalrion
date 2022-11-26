@@ -19,7 +19,7 @@ public class PauseMenu : MonoBehaviour
     {
         pauseMenuUI.SetActive(false);
         //Resume();
-        GameManager.instance.playerA.playerInputs.UI.Pause.performed += ctx => PauseResumeButton(ctx);
+        //GameManager.instance.playerA.playerInputs.UI.Pause.performed += ctx => PauseResumeButton(ctx);
        // GameManager.instance.playerB.playerInputs.Player.Pause.performed += ctx => Pause(ctx);
         //GameManager.instance.playerB.playerInputs.Player.Pause.performed += ctx => Resume(ctx);
     }

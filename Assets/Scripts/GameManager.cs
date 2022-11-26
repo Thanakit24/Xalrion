@@ -2,22 +2,36 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem;
 using TMPro;
 using System;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
-    public PlayerStatemachine playerA;
-    public PlayerStatemachine playerB;
+    public PlayerStatemachine playerA = null;
+    public PlayerStatemachine playerB = null;
+
+    [Header("Player Color")]
+    public Material playerAcolor;
+    public Material playerArocketColor;
+    public Material playerBcolor;
+    public Material playerBrocketColor;
+
+    public LayerMask playerAcullingMask;
+    public LayerMask playerBcullingMask;
+
+    [Header("UI")]
+    public PlayerUI playerAUI;
+    public PlayerUI playerBUI;
+    public Sprite KeyboardSprite;
+    public Sprite ControllerSprite;
+
 
     [Header("Player Spawns")]
     public Transform playerASpawnpoint;
     public Transform playerBSpawnpoint;
 
-    [Header("Player Prefabs")]
-    public GameObject playerApref;
-    public GameObject playerBpref;
 
     [Header("PlayerALives")]
     public TMP_Text playerA_LivesDisplay;
@@ -30,19 +44,6 @@ public class GameManager : MonoBehaviour
     public bool playerBdied = false;
     public int playerB_Lives;
     public int playerB_MaxLives = 3;
-
-    //[Header("Respawn A Player")]
-    //public GameObject A_respawn;
-    //public TMP_Text A_respawnTimer;
-    //private float A_maxRespawnTimer = 3;
-    //public float A_currentRespawnTimer;
-    //public bool A_canSpawn = false;
-
-    //[Header("Respawn B Player")]
-    //public GameObject B_respawn;
-    //public TMP_Text B_respawnTimer;
-    //private float B_maxRespawnTimer = 3;
-    //public float B_currentRespawnTimer;
 
     [Header("Damage Flash")]
     public GameObject A_damageFlash;
@@ -66,6 +67,7 @@ public class GameManager : MonoBehaviour
         playerA_Lives = playerA_MaxLives;
         playerB_Lives = playerB_MaxLives;
 
+        PlayerInputManager.instance.onPlayerJoined += OnPlayerJoined;
 
     }
     // Update is called once per frame
@@ -85,6 +87,54 @@ public class GameManager : MonoBehaviour
 
             //get ref from ping pong game
         }
+    }
+
+
+
+    private void OnPlayerJoined(PlayerInput pInput)
+    {
+        Sprite inputSprite;
+        if (pInput.currentControlScheme == "Keyboard and mouse")
+            inputSprite = KeyboardSprite;
+        else //"Gamepad"
+            inputSprite = ControllerSprite;
+
+        var player = pInput.GetComponent<PlayerStatemachine>();
+        if (!playerA) //if isnt player A? nani?
+        {
+            playerA = player;
+            player.PlayerA = true;
+            player.ui = playerAUI;
+            player.playerMesh.material = playerAcolor;
+            player.armMesh.material = playerArocketColor;
+            player.cam.cullingMask = playerAcullingMask;
+            //player.game
+            player.cam.rect = new Rect(new Vector2(0, 0), new Vector2(0.5f, 1));
+            //Locate player in spawnPoint
+        }
+        else
+        {
+            playerB = player;
+            player.PlayerA = false;
+            player.ui = playerBUI;
+            player.playerMesh.material = playerBcolor;
+            player.armMesh.material = playerBrocketColor;
+            //player.gameObject.layer = 9;
+            player.cam.cullingMask = playerBcullingMask;
+            player.face.gameObject.layer = 11;
+            player.cam.rect = new Rect(new Vector2(0.5f, 0), new Vector2(0.5f, 1));
+            //Game has started
+            //Start Countdown in UI
+        }
+        player.ui.gameObject.SetActive(true);
+        player.ui.checkPlayerReadyText.gameObject.SetActive(false);
+        player.ui.deviceIndicator.sprite = inputSprite;
+        player.OnSpawn();
+    }
+
+    private void OnDisable()
+    {
+
     }
     public void PlayerWon()
     {
@@ -107,23 +157,5 @@ public class GameManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
     }
 
-    //cringe shit no cap
-    public void A_DamageFlash()
-    {
-        A_damageFlash.SetActive(true);
-        Invoke("A_ResetFlash", 0.25f);
-    }
-    public void A_ResetFlash()
-    {
-        A_damageFlash.SetActive(false);
-    }
-    public void B_DamageFlash()
-    {
-        B_damageFlash.SetActive(true);
-        Invoke("B_ResetFlash", 0.25f);
-    }
-    public void B_ResetFlash()
-    {
-        B_damageFlash.SetActive(false);
-    }
+
 }

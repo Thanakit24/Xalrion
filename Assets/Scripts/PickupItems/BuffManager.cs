@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class BuffManager : MonoBehaviour
@@ -7,7 +8,7 @@ public class BuffManager : MonoBehaviour
     float AGilityTimer;
     public Dictionary<BuffDetails, float> buffs = new Dictionary<BuffDetails, float>();
     private PlayerStatemachine player;
-    public BuffDetails test;
+    //public BuffDetails test;
     // Start is called before the first frame update
     void Awake()
     {
@@ -15,25 +16,32 @@ public class BuffManager : MonoBehaviour
         //AddBuff(test);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-    private void FixedUpdate()
+    private void Update()
     {
         List<BuffDetails> buffsToRemove = new List<BuffDetails>();
-        foreach (var buffDetails in buffs)
+        var buffList = buffs.Keys.ToArray();
+        int i = 0;
+        
+        for (; i<buffList.Length; i++)
         {
-            if (buffs[buffDetails.Key] <= 0) //get value in the key. The water inside the bucket. 
+            var buffDetails = buffList[i];
+            if (buffs[buffDetails] <= 0) //get value in the key. The water inside the bucket. 
             {
-                buffsToRemove.Add(buffDetails.Key);
+                buffsToRemove.Add(buffDetails);
             }
             else
             {
-                buffs[buffDetails.Key] -= Time.fixedDeltaTime; //if got water, then decrease it
+                buffs[buffDetails] -= Time.deltaTime; //if got water, then decrease it
             }
+            player.ui.buffIcons[i].gameObject.SetActive(true); //setting active buffs onto ui
+            player.ui.buffIcons[i].sprite = buffDetails.icon;
+            player.ui.buffIcons[i].color = new Color(1, 1, 1, KongrooUtils.RemapRange(buffs[buffDetails], 0, buffDetails.duration, 0, 1));
         }
+
+        for(; i<player.ui.buffIcons.Length; i++)
+            player.ui.buffIcons[i].gameObject.SetActive(false);
+
+
         foreach (var buffToRemove in buffsToRemove)
         {
             buffs.Remove(buffToRemove);

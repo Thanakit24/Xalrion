@@ -327,11 +327,11 @@ public class PlayerController : MonoBehaviour
         currentHealth -= damage;
         if (PlayerA)
         {
-            GameManager.instance.A_DamageFlash();
+           //GameManager.instance.A_DamageFlash();
         }
         else
         {
-            GameManager.instance.B_DamageFlash();
+            //G//ameManager.instance.B_DamageFlash();
         }
     }
 

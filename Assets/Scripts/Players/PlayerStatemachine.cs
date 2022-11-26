@@ -51,12 +51,10 @@ public class PlayerStatemachine : StateMachine
     private RaycastHit slopeHit;
 
     [Header("Health")]
-    public Slider healthSlider;
     public float currentHealth;
     public float maxHealth;
 
     [Header("Fuel")]
-    public Slider fuelSlider;
     public float currentFuel;
     public float maxFuel;
     public float fuelIncrease;
@@ -85,7 +83,8 @@ public class PlayerStatemachine : StateMachine
     public float dashDuration;
     public float maxDashYSpeed;
     public float dereaseFuel;
-
+    public float jetpackInput;
+    public float launchInput;
     [Header("Particles")]
     public ParticleSystem jetPackParticle;
 
@@ -94,10 +93,15 @@ public class PlayerStatemachine : StateMachine
     [Header("References")]
     public Camera cam;
     public PlayerCam camScript;
-    public List<float> buffs = new List<float>();
+    //public List<float> buffs = new List<float>();
+    [HideInInspector] public BuffManager buffManager;
+    [HideInInspector] public PlayerUI ui;
 
-    [HideInInspector]public BuffManager buffManager;
-
+    //[HideInInspector] public Material colorMaterial;
+    //[HideInInspector] public Material armMaterial;
+    public MeshRenderer playerMesh;
+    public MeshRenderer armMesh;
+    public GameObject face;
    
     public override BaseState DefaultState()
     {
@@ -112,26 +116,28 @@ public class PlayerStatemachine : StateMachine
         buffManager = GetComponent<BuffManager>();
         //var input = GetComponent<PlayerInput>();
         playerInputs = new InputMaster();
+        camScript.playerInput = playerInputs;
     }
 
     protected override void Start()
     {
         base.Start();
-        currentFuel = maxFuel;
         currentHealth = maxHealth;
-        fuelSlider.maxValue = maxFuel;
-        healthSlider.maxValue = maxHealth;
+        ui.health.maxValue = maxHealth;
+        currentFuel = maxFuel;
+        ui.fuel.maxValue = maxFuel;
+
     }
     private void OnEnable()
     {
         playerInputs.Enable();
 
-        //print("set to player a input");
-        playerInputs.Player.Move.performed += ctx => SetMove(ctx);
-        playerInputs.Player.Jump.performed += ctx => OnJump(ctx);
-        playerInputs.Player.Launch.performed += ctx => OnLaunch(ctx);
-        playerInputs.Player.Fire.performed += ctx => OnFireRocket(ctx);
-        playerInputs.Player.Fire2.performed += ctx => OnBackdashShot(ctx);
+        //No longer using events because Unity automatically subscribes to On<Action> as seen below
+        //playerInputs.Player.Move.performed += ctx => OnMove(ctx);
+        //playerInputs.Player.Jump.performed += ctx => OnJump(ctx);
+        //playerInputs.Player.Launch.performed += ctx => OnLaunch(ctx);
+        //playerInputs.Player.Fire.performed += ctx => OnFireRocket(ctx);
+        //playerInputs.Player.Fire2.performed += ctx => OnBackdashShot(ctx);
     }
     private void OnDisable()
     {
@@ -139,17 +145,17 @@ public class PlayerStatemachine : StateMachine
         playerInputs.Disable();
     }
     #region Inputs
-    public void SetMove(InputAction.CallbackContext ctx)
+   
+    void OnMove(InputValue value)
     {
-        var inputDir = ctx.ReadValue<Vector2>();
-        horizontal = inputDir.x;
-        vertical = inputDir.y;
-        //print("Set input move dir");
+        horizontal = value.Get<Vector2>().x;
+        vertical = value.Get<Vector2>().y;
     }
 
-    public void OnJump(InputAction.CallbackContext ctx)
+    //public void OnJump(InputAction.CallbackContext ctx)
+    public void OnJump(InputValue value)
     {
-        var jumpedInput = ctx.ReadValue<float>();
+        var jumpedInput = value.Get<float>();
         
         if (jumpedInput > 0.1f && currentState is GroundMoveState)
         {
@@ -157,33 +163,40 @@ public class PlayerStatemachine : StateMachine
         }
     }
 
-    public void OnLaunch(InputAction.CallbackContext ctx)
+    void OnLook(InputValue value)
     {
-        var launchInput = ctx.ReadValue<float>();
-        if (launchInput > 0.1f && currentState is FallState && currentFuel > 0)
-        {
-            ChangeState(new LaunchState(this));
-        }
+        camScript.lookDir = value.Get<Vector2>();
     }
-    public void OnJetpackHeld()
+
+    //public void OnLaunch(InputValue value)
+    //{
+    //    launchInput = value.Get<float>();
+    //    if (launchInput > 0.1f && currentState is FallState && currentFuel > 0)
+    //    {
+    //        print("launch state");
+    //        ChangeState(new LaunchState(this));
+    //    }
+    //}
+    public void OnJetpack(InputValue value)
     {
-        float jetpackInput = playerInputs.Player.Jetpack.ReadValue<float>();
-        if (jetpackInput != 0f && currentFuel > 0 && currentState is FallState)
+        jetpackInput = value.Get<float>();
+        if (jetpackInput >= 0.5f && currentFuel > 0 && currentState is FallState)
         {
             //Debug.Log("Jetpack input held");
+            ChangeState(new LaunchState(this));
             ChangeState(new JetpackState(this));
         }
 
-        if (jetpackInput == 0 && currentState is JetpackState)
+        if (jetpackInput <= 0.5f && currentState is JetpackState)
         {
             //Debug.Log("Jetpack input let go");
             ChangeState(new FallState(this));
         }
     }
-    public void OnFireRocket(InputAction.CallbackContext ctx)
+    public void OnFire(InputValue value)
     {
-        var fireInput = ctx.ReadValue<float>();
-        if  (fireInput > 0 && readyToShoot)
+        var fireInput = value.Get<float>();
+        if  (fireInput > 0.1f && readyToShoot)
         {
             //Debug.Log("Fire rocket");
             rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
@@ -201,33 +214,36 @@ public class PlayerStatemachine : StateMachine
             var currentRocket = Instantiate(prefabToInstance, shootPoint.position, Quaternion.identity);
             currentRocket.transform.forward = direction.normalized;
             var homing = currentRocket.GetComponent<HomingRocket>();
+            if (homing != null)
             homing.target = OppositePerson().transform;
             rb.AddForce(-cam.transform.forward * recoilForce, ForceMode.Impulse);
 
            
         }
     }
-    private PlayerStatemachine OppositePerson()
+
+    public void OnFire2(InputValue value)
     {
-        return PlayerA ? GameManager.instance.playerB : GameManager.instance.playerA;
-    }
-    public void OnBackdashShot(InputAction.CallbackContext ctx)
-    {
-        var backDashShotInput = ctx.ReadValue<float>();
-        if (backDashShotInput > 0 && currentFuel > 0 && dashcoolDown  <= 0)
+        var backDashShotInput = value.Get<float>();
+        if (backDashShotInput > 0 && currentFuel > 0 && dashcoolDown <= 0)
         {
             ChangeState(new BackdashState(this));
             backDashShot = Instantiate(backDashShotPrefab, shootPoint.position, Quaternion.identity);
         }
     }
+    private PlayerStatemachine OppositePerson()
+    {
+        return PlayerA ? GameManager.instance.playerB : GameManager.instance.playerA;
+    }
+    
 #endregion
     // Update is called once per frame
     protected override void Update()
     {
         base.Update();
         //ProcessInputs();
-        healthSlider.value = currentHealth;
-        fuelSlider.value = currentFuel;
+        ui.health.value = currentHealth;
+        ui.fuel.value = currentFuel;
         isGrounded = Physics.CheckSphere(groundCheck.position, groundCheckRadius, groundLayerMask);
 
         if (allowInvoke)
@@ -258,7 +274,7 @@ public class PlayerStatemachine : StateMachine
             }
         }
 
-        OnJetpackHeld();
+       // OnJetpackHeld();
     }
     protected override void FixedUpdate()
     {
@@ -286,14 +302,13 @@ public class PlayerStatemachine : StateMachine
         }
         currentHealth -= damage;
         Debug.Log("take damage");
-        if (PlayerA)
-        {
-            GameManager.instance.A_DamageFlash();
-        }
-        else
-        {
-            GameManager.instance.B_DamageFlash();
-        }
+        ui.damagedFlash.gameObject.SetActive(true);
+        Invoke("ResetFlash", 0.25f);
+    }
+
+    public void ResetFlash()
+    {
+        ui.damagedFlash.gameObject.SetActive(false);
     }
     public void OnSpawn()
     {
@@ -314,8 +329,8 @@ public class PlayerStatemachine : StateMachine
     }
     public void Respawn(Slider fuel, Slider health)
     {
-        fuelSlider = fuel;
-        healthSlider = health;
+        ui.fuel= fuel;
+        ui.health = health;
     }
     public bool OnSlope()
     {
