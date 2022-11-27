@@ -26,7 +26,10 @@ public class PauseMenu : MonoBehaviour
     }
     void Update()
     {
-       
+       if (Input.GetKeyDown(KeyCode.Escape)) //temp 
+        {
+            //do pause
+        }
     }
     //public void Resume(InputAction.CallbackContext ctx) 
     //{

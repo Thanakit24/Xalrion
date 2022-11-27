@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
+using TMPro;
 
 public class PlayerStatemachine : StateMachine
 {
@@ -54,6 +55,10 @@ public class PlayerStatemachine : StateMachine
     public float currentHealth;
     public float maxHealth;
 
+    [Header("Dead")]
+    public float respawnTimer;
+    public float respawnTimerMax;
+
     [Header("Fuel")]
     public float currentFuel;
     public float maxFuel;
@@ -99,6 +104,7 @@ public class PlayerStatemachine : StateMachine
     public MeshRenderer playerMesh;
     public MeshRenderer armMesh;
     public GameObject face;
+    private PlayerInput pi;
 
     public override BaseState DefaultState()
     {
@@ -113,6 +119,7 @@ public class PlayerStatemachine : StateMachine
         buffManager = GetComponent<BuffManager>();
         //var input = GetComponent<PlayerInput>();
         playerInputs = new InputMaster();
+        pi = GetComponent<PlayerInput>();
         camScript.playerInput = playerInputs;
     }
 
@@ -120,6 +127,7 @@ public class PlayerStatemachine : StateMachine
     {
         base.Start();
         playerInputs.Disable();
+        respawnTimer = respawnTimerMax;
         currentHealth = maxHealth;
         ui.health.maxValue = maxHealth;
         currentFuel = maxFuel;
@@ -213,10 +221,8 @@ public class PlayerStatemachine : StateMachine
             currentRocket.transform.forward = direction.normalized;
             var homing = currentRocket.GetComponent<HomingRocket>();
             if (homing != null)
-                homing.target = OppositePerson().transform;
+                homing.target = OppositePerson();    //OppositePerson().transform;
             rb.AddForce(-cam.transform.forward * recoilForce, ForceMode.Impulse);
-
-
         }
     }
 
@@ -277,6 +283,23 @@ public class PlayerStatemachine : StateMachine
             Died();
         }
 
+        if (ui.respawningUI.activeSelf) //check if respawning ui is on, if it is start countdown 
+        {
+            respawnTimer -= 1 * Time.deltaTime;
+            pi.DeactivateInput();
+
+            //Mathf.RoundToInt(gameCountdownTimer);
+            ui.respawnTimerText.text = respawnTimer.ToString("0");//countdown ui
+            if (respawnTimer <= 0) //countdown over
+            {
+                respawnTimer = respawnTimerMax;
+                ui.respawningUI.gameObject.SetActive(false);
+                pi.ActivateInput();
+                OnSpawn(); //spawn player on spawnpoint 
+            }
+        }
+        
+
         // OnJetpackHeld();
     }
     protected override void FixedUpdate()
@@ -298,7 +321,7 @@ public class PlayerStatemachine : StateMachine
     }
     public void TakeDamage(int damage)
     {
-        if (buffManager.HasBuff(AssetDb.instance.invincibleBuff))
+        if (buffManager.HasBuff(AssetDb.instance.invincibleBuff) || ui.respawningUI.activeSelf)
         {
             //print("has invincible buff");
             return;
@@ -340,12 +363,11 @@ public class PlayerStatemachine : StateMachine
     {
         if (PlayerA)
         {
-            //var spawnPos = GameManager.instance.playerASpawnpoint.position;
-            //var player = GameManager.instance.playerA;
             GameManager.instance.playerA_Lives--;
             currentHealth = maxHealth;
-            OnSpawn();
-            //playerGameObject.GetComponent<PlayerController>().Respawn(fuelSlider, healthSlider);
+            //call a function to open death ui, start countdown then call on spawn after countdown is done. 
+            RespawnUI();
+            
         }
         else
         {
@@ -353,9 +375,14 @@ public class PlayerStatemachine : StateMachine
             //var player = GameManager.instance.playerB;
             GameManager.instance.playerB_Lives--;
             currentHealth = maxHealth;
-            OnSpawn();
+            RespawnUI();
             //playerGameObject.GetComponent<PlayerController>().Respawn(fuelSlider, healthSlider);
         }
+    }
+    public void RespawnUI()
+    {
+        print("respawn called");
+        ui.respawningUI.SetActive(true);
     }
     public bool OnSlope()
     {

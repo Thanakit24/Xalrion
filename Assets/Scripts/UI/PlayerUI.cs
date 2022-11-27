@@ -8,13 +8,15 @@ public class PlayerUI : MonoBehaviour
 {
     [Header("Gameplay")]
     public Slider health;
+    public GameObject respawningUI;
+    public TMP_Text respawnTimerText;
     public Slider fuel;
     public GridLayoutGroup buffGrid;
     public Image[] buffIcons;
     public Image damagedFlash;
 
     [Header("JoinGame")]
-    public GameObject joinGameUi; 
+   
     public TMP_Text checkPlayerReadyText;
     public TMP_Text playerName;
     public Image playerReadyPanel;

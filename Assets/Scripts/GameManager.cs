@@ -27,7 +27,9 @@ public class GameManager : MonoBehaviour
 
     [Header("Player Rocket")]
     public GameObject playerARocket;
+    public GameObject playerAhomingRocket;
     public GameObject playerBRocket;
+    public GameObject playerBhomingRocket;
     public GameObject playerABackdash;
     public GameObject playerBBackdash;
 
@@ -143,8 +145,10 @@ public class GameManager : MonoBehaviour
             player.cam.cullingMask = playerAcullingMask;
             player.rocketPrefab = playerARocket;
             player.backDashShotPrefab = playerABackdash;
+            player.homingRocketPrefab = playerAhomingRocket;
             player.cam.rect = new Rect(new Vector2(0, 0), new Vector2(0.5f, 1)); //split cam 
-            //player.enabled = false; 
+            //player.playerInputs.Player.Disable();
+            player.enabled = false;
             //Locate player in spawnPoint
         }
         else
@@ -160,13 +164,16 @@ public class GameManager : MonoBehaviour
             player.face.gameObject.layer = 11;
             player.rocketPrefab = playerBRocket;
             player.backDashShotPrefab = playerBBackdash;
+            player.homingRocketPrefab = playerBhomingRocket;
             player.cam.rect = new Rect(new Vector2(0.5f, 0), new Vector2(0.5f, 1)); //split cam
-            //player.enabled = false;
+            //player.playerInputs.Player.Disable();
+            player.enabled = false;
             //Game has started
             //Start Countdown in UI
         }
         player.OnSpawn();
 
+        player.ui.deviceIndicator.sprite = inputSprite;
         if (numberOfActivePlayers == 1) //if 1 player joins
         {
             //wait for other player
@@ -188,7 +195,7 @@ public class GameManager : MonoBehaviour
     {
         //decrement time counter; 
         //set both players and cam to enabled true when done. 
-        print("starting game timer");
+        //print("starting game timer");
         gameStartTimer.gameObject.SetActive(true);
         playerA.ui.checkPlayerReadyText.gameObject.SetActive(false);
         playerA.ui.playerName.gameObject.SetActive(false);

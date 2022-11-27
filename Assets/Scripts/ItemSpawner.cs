@@ -30,7 +30,7 @@ public class ItemSpawner : MonoBehaviour
             if (spawnTimer <= 0)
             {
                 //spawn shit randomly, random items, random spawn locations 
-                print("run func");
+                //print("run func");
                 itemSpawned = true;
                 var randomItem = Random.Range(0, 4);
                 var randomSpawn = Random.Range(0, 1);
