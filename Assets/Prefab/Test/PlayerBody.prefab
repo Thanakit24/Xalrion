@@ -240,6 +240,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8b2d3e4abc419845a3fa83b51881cd1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  upwardForce: 35
+  upwardMaxForce: 20
+  upwardMinForce: 40
+  minRotateAngle: -90
+  maxRotateAngle: 90
+  rotateAngle: 0
 --- !u!1 &7882111446442686134
 GameObject:
   m_ObjectHideFlags: 0

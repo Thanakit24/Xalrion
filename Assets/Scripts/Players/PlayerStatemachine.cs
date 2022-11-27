@@ -286,12 +286,6 @@ public class PlayerStatemachine : StateMachine
 
         if (ui.respawningUI.activeSelf) //check if respawning ui is on, if it is start countdown 
         {
-            var temp = true;
-            if (temp)
-            {
-                Instantiate(GameManager.instance.playerDeadBody, transform.position, Quaternion.identity);
-                temp = false;
-            }
             respawnTimer -= 1 * Time.deltaTime;
             pi.DeactivateInput();
             rb.velocity = Vector2.zero;
@@ -378,6 +372,7 @@ public class PlayerStatemachine : StateMachine
         {
             GameManager.instance.playerA_Lives--;
             currentHealth = maxHealth;
+            Instantiate(GameManager.instance.playerDeadBody, transform.position, GameManager.instance.playerDeadBody.transform.rotation);
             //call a function to open death ui, start countdown then call on spawn after countdown is done. 
             RespawnUI();
             
@@ -388,6 +383,7 @@ public class PlayerStatemachine : StateMachine
             //var player = GameManager.instance.playerB;
             GameManager.instance.playerB_Lives--;
             currentHealth = maxHealth;
+            Instantiate(GameManager.instance.playerDeadBody, transform.position, Quaternion.identity);
             RespawnUI();
             //playerGameObject.GetComponent<PlayerController>().Respawn(fuelSlider, healthSlider);
         }
