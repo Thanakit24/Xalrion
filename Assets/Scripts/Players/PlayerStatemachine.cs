@@ -7,7 +7,7 @@ using UnityEngine.InputSystem;
 public class PlayerStatemachine : StateMachine
 {
     public bool PlayerA;
-
+    public bool isDead;
     [Header("Inputs")]
     //public KeyCode jump = KeyCode.Space;
     //public KeyCode jetPack = KeyCode.Space;
@@ -64,18 +64,18 @@ public class PlayerStatemachine : StateMachine
     [HideInInspector] public Vector3 targetPoint;
     public Transform shootPoint;
     public LayerMask hitLayer;
-    public PlayerRocket_Explosion rocketPrefab;
-    public PlayerRocket_Explosion homingRocketPrefab;
-    public GameObject backDashShotPrefab;
-    [HideInInspector] public GameObject backDashShot;
+    public GameObject rocketPrefab;
+    public GameObject homingRocketPrefab;
     public float recoilForce;
     public float shootForce;
     public bool readyToShoot;
     public float coolDown;
     public bool allowInvoke = false;
     [Header("Backdash")]
-    public GameObject backdashExplosion;
+
+    //public GameObject backdashExplosion;
     //public float pushBackForce;
+    public GameObject backDashShotPrefab;
     public float backDashForce;
     public float upBackDashForce;
     public float dashcoolDown;
@@ -96,13 +96,10 @@ public class PlayerStatemachine : StateMachine
     //public List<float> buffs = new List<float>();
     [HideInInspector] public BuffManager buffManager;
     [HideInInspector] public PlayerUI ui;
-
-    //[HideInInspector] public Material colorMaterial;
-    //[HideInInspector] public Material armMaterial;
     public MeshRenderer playerMesh;
     public MeshRenderer armMesh;
     public GameObject face;
-   
+
     public override BaseState DefaultState()
     {
         return new GroundMoveState(this);
@@ -122,6 +119,7 @@ public class PlayerStatemachine : StateMachine
     protected override void Start()
     {
         base.Start();
+        playerInputs.Disable();
         currentHealth = maxHealth;
         ui.health.maxValue = maxHealth;
         currentFuel = maxFuel;
@@ -145,7 +143,7 @@ public class PlayerStatemachine : StateMachine
         playerInputs.Disable();
     }
     #region Inputs
-   
+
     void OnMove(InputValue value)
     {
         horizontal = value.Get<Vector2>().x;
@@ -156,7 +154,7 @@ public class PlayerStatemachine : StateMachine
     public void OnJump(InputValue value)
     {
         var jumpedInput = value.Get<float>();
-        
+
         if (jumpedInput > 0.1f && currentState is GroundMoveState)
         {
             ChangeState(new JumpState(this));
@@ -196,7 +194,7 @@ public class PlayerStatemachine : StateMachine
     public void OnFire(InputValue value)
     {
         var fireInput = value.Get<float>();
-        if  (fireInput > 0.1f && readyToShoot)
+        if (fireInput > 0.1f && readyToShoot)
         {
             //Debug.Log("Fire rocket");
             rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
@@ -215,10 +213,10 @@ public class PlayerStatemachine : StateMachine
             currentRocket.transform.forward = direction.normalized;
             var homing = currentRocket.GetComponent<HomingRocket>();
             if (homing != null)
-            homing.target = OppositePerson().transform;
+                homing.target = OppositePerson().transform;
             rb.AddForce(-cam.transform.forward * recoilForce, ForceMode.Impulse);
 
-           
+
         }
     }
 
@@ -228,15 +226,15 @@ public class PlayerStatemachine : StateMachine
         if (backDashShotInput > 0 && currentFuel > 0 && dashcoolDown <= 0)
         {
             ChangeState(new BackdashState(this));
-            backDashShot = Instantiate(backDashShotPrefab, shootPoint.position, Quaternion.identity);
+            //Instantiate(backDashShotPrefab, shootPoint.position, Quaternion.identity);
         }
     }
     private PlayerStatemachine OppositePerson()
     {
         return PlayerA ? GameManager.instance.playerB : GameManager.instance.playerA;
     }
-    
-#endregion
+
+    #endregion
     // Update is called once per frame
     protected override void Update()
     {
@@ -274,7 +272,12 @@ public class PlayerStatemachine : StateMachine
             }
         }
 
-       // OnJetpackHeld();
+        if (currentHealth <= 0)
+        {
+            Died();
+        }
+
+        // OnJetpackHeld();
     }
     protected override void FixedUpdate()
     {
@@ -329,8 +332,30 @@ public class PlayerStatemachine : StateMachine
     }
     public void Respawn(Slider fuel, Slider health)
     {
-        ui.fuel= fuel;
+        ui.fuel = fuel;
         ui.health = health;
+    }
+
+    public void Died()
+    {
+        if (PlayerA)
+        {
+            //var spawnPos = GameManager.instance.playerASpawnpoint.position;
+            //var player = GameManager.instance.playerA;
+            GameManager.instance.playerA_Lives--;
+            currentHealth = maxHealth;
+            OnSpawn();
+            //playerGameObject.GetComponent<PlayerController>().Respawn(fuelSlider, healthSlider);
+        }
+        else
+        {
+            //var spawnPos = GameManager.instance.playerBSpawnpoint.position;
+            //var player = GameManager.instance.playerB;
+            GameManager.instance.playerB_Lives--;
+            currentHealth = maxHealth;
+            OnSpawn();
+            //playerGameObject.GetComponent<PlayerController>().Respawn(fuelSlider, healthSlider);
+        }
     }
     public bool OnSlope()
     {
@@ -339,7 +364,7 @@ public class PlayerStatemachine : StateMachine
         {
             if (slopeHit.transform.gameObject.layer == LayerMask.NameToLayer("Ground"))
             {
-                Debug.DrawRay(transform.position, Vector3.down, Color.green, 50f); 
+                Debug.DrawRay(transform.position, Vector3.down, Color.green, 50f);
                 float slopeAngle = Vector3.Angle(Vector3.up, slopeHit.normal);
                 return slopeAngle < maxSlopeAngle && slopeAngle != 0;
             }
@@ -350,5 +375,5 @@ public class PlayerStatemachine : StateMachine
     {
         return Vector3.ProjectOnPlane(moveDirection, slopeHit.normal).normalized;
     }
-   
+
 }

@@ -19,8 +19,9 @@ public class PauseMenu : MonoBehaviour
     {
         pauseMenuUI.SetActive(false);
         //Resume();
-        //GameManager.instance.playerA.playerInputs.UI.Pause.performed += ctx => PauseResumeButton(ctx);
-       // GameManager.instance.playerB.playerInputs.Player.Pause.performed += ctx => Pause(ctx);
+        GameManager.instance.playerA.playerInputs.UI.Pause.performed += ctx => PauseResumeButton(ctx);
+        GameManager.instance.playerB.playerInputs.UI.Pause.performed += ctx => PauseResumeButton(ctx);
+        //GameManager.instance.playerB.playerInputs.Player.Pause.performed += ctx => Pause(ctx);
         //GameManager.instance.playerB.playerInputs.Player.Pause.performed += ctx => Resume(ctx);
     }
     void Update()
@@ -53,7 +54,7 @@ public class PauseMenu : MonoBehaviour
     {
         if (ctx.performed && !pauseMenuUI.activeSelf)
         {
-            //print("pause on");
+            print("pause on");
             eventSys.firstSelectedGameObject = resumeButton;
             //print("resume button set as first");
             playerA_UI.SetActive(false);

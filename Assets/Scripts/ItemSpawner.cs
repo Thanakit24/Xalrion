@@ -18,6 +18,10 @@ public class ItemSpawner : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (GameManager.instance.playerA == null || GameManager.instance.playerB == null)
+        {
+            return;
+        }
         if (!itemSpawned)
         {
             spawnTimer -= Time.deltaTime;
@@ -34,7 +38,6 @@ public class ItemSpawner : MonoBehaviour
                 //Debug.Log(randomSpawn);
                 Instantiate(itemsToSpawn[randomItem].gameObject, spawnLocations[randomSpawn].position, Quaternion.identity);
                 //Debug.Log($"item {randomItem} spawned at {randomSpawn} location");
-                
             }
         }
     }

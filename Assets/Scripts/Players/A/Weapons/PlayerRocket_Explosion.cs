@@ -52,17 +52,29 @@ public class PlayerRocket_Explosion : MonoBehaviour
                 if (!Physics.Raycast(startPos, shootDir, out RaycastHit hitInfo, distance + wallRaycastOffset, blockExplosionLayer)) //if raycast doesnt hit the wall
                 {
                     Debug.DrawLine(explosionPos, explosionPos + shootDir * distance, Color.red, 100f);
-                    rb.AddExplosionForce(power, explosionPos, radius, upwardForce, ForceMode.Impulse);
+                    
 
                     //do damage to the hitmask layer (player layer)
                     float damage = RemapRange(Mathf.Clamp(distance, 0f, radius), 0f, radius, maxDamage, minDamage);
-                    rb.GetComponent<PlayerStatemachine>().TakeDamage(Mathf.RoundToInt(damage));
+                    var player = rb.GetComponent<PlayerStatemachine>();
+                    player.TakeDamage(Mathf.RoundToInt(damage));
                     print(damage);
-              
+                    if (player.currentHealth <= 0)
+                    {
+                        return;
+                    }
+                    rb.AddExplosionForce(power, explosionPos, radius, upwardForce, ForceMode.Impulse);
                 }
             }
         }
         Destroy(gameObject);
+        Invoke("DestroyParticleObj", 2f);
+    }
+
+    public void DestroyParticleObj()
+    {
+        print("destroy rocket particle");
+        Destroy(rocketExplosionEffect);
     }
 
     public static float RemapRange(float value, float inputA, float inputB, float outputA, float outputB)

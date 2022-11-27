@@ -11,21 +11,32 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
     public PlayerStatemachine playerA = null;
     public PlayerStatemachine playerB = null;
+    
+    public bool gameStarted = false;
+
+    [SerializeField] private float gameCountdownTimer = 0f;
+    [SerializeField] private float gameCountdownMaxTimer; 
 
     [Header("Player Color")]
     public Material playerAcolor;
     public Material playerArocketColor;
     public Material playerBcolor;
     public Material playerBrocketColor;
-
     public LayerMask playerAcullingMask;
     public LayerMask playerBcullingMask;
+
+    [Header("Player Rocket")]
+    public GameObject playerARocket;
+    public GameObject playerBRocket;
+    public GameObject playerABackdash;
+    public GameObject playerBBackdash;
 
     [Header("UI")]
     public PlayerUI playerAUI;
     public PlayerUI playerBUI;
     public Sprite KeyboardSprite;
     public Sprite ControllerSprite;
+    public TMP_Text gameStartTimer; 
 
 
     [Header("Player Spawns")]
@@ -66,6 +77,8 @@ public class GameManager : MonoBehaviour
         B_damageFlash.SetActive(false);
         playerA_Lives = playerA_MaxLives;
         playerB_Lives = playerB_MaxLives;
+        gameStarted = false;
+        gameCountdownTimer = gameCountdownMaxTimer;
 
         PlayerInputManager.instance.onPlayerJoined += OnPlayerJoined;
 
@@ -73,10 +86,23 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //if (Input.GetKeyDown(KeyCode.R))
-        //{
-        //    SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-        //}
+        if (gameStartTimer.gameObject.activeSelf)
+        {
+            
+            gameCountdownTimer -= 1 * Time.deltaTime;
+            //Mathf.RoundToInt(gameCountdownTimer);
+            gameStartTimer.text = gameCountdownTimer.ToString("0");
+            if (gameCountdownTimer <= 0)
+            {
+                gameCountdownTimer = gameCountdownMaxTimer;
+                gameStartTimer.gameObject.SetActive(false);
+                SettingPlayers();
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
 
         playerA_LivesDisplay.text = $"LIVES: {playerA_Lives}";
         playerB_LivesDisplay.text = $"LIVES: {playerB_Lives}";
@@ -89,11 +115,18 @@ public class GameManager : MonoBehaviour
         }
     }
 
-
-
+    
     private void OnPlayerJoined(PlayerInput pInput)
     {
+        //if (!canJoin)
+        //{
+        //    return; 
+        //}
         Sprite inputSprite;
+        var numberOfActivePlayers = PlayerInput.all.Count;
+        print("there are" + numberOfActivePlayers + "players");
+       
+        //PlayerInputManager.instance.JoinPlayer(1, 0, pInput.currentControlScheme);
         if (pInput.currentControlScheme == "Keyboard and mouse")
             inputSprite = KeyboardSprite;
         else //"Gamepad"
@@ -108,8 +141,10 @@ public class GameManager : MonoBehaviour
             player.playerMesh.material = playerAcolor;
             player.armMesh.material = playerArocketColor;
             player.cam.cullingMask = playerAcullingMask;
-            //player.game
-            player.cam.rect = new Rect(new Vector2(0, 0), new Vector2(0.5f, 1));
+            player.rocketPrefab = playerARocket;
+            player.backDashShotPrefab = playerABackdash;
+            player.cam.rect = new Rect(new Vector2(0, 0), new Vector2(0.5f, 1)); //split cam 
+            //player.enabled = false; 
             //Locate player in spawnPoint
         }
         else
@@ -121,20 +156,59 @@ public class GameManager : MonoBehaviour
             player.armMesh.material = playerBrocketColor;
             //player.gameObject.layer = 9;
             player.cam.cullingMask = playerBcullingMask;
+            SetLayerAllChildren(player.transform, 9);
             player.face.gameObject.layer = 11;
-            player.cam.rect = new Rect(new Vector2(0.5f, 0), new Vector2(0.5f, 1));
+            player.rocketPrefab = playerBRocket;
+            player.backDashShotPrefab = playerBBackdash;
+            player.cam.rect = new Rect(new Vector2(0.5f, 0), new Vector2(0.5f, 1)); //split cam
+            //player.enabled = false;
             //Game has started
             //Start Countdown in UI
         }
-        player.ui.gameObject.SetActive(true);
-        player.ui.checkPlayerReadyText.gameObject.SetActive(false);
-        player.ui.deviceIndicator.sprite = inputSprite;
         player.OnSpawn();
+
+        if (numberOfActivePlayers == 1) //if 1 player joins
+        {
+            //wait for other player
+            //change ui text to playerX is ready 
+            playerA.ui.checkPlayerReadyText.text = $"Ready";
+        }
+        if (numberOfActivePlayers == 2)
+        {
+            playerB.ui.checkPlayerReadyText.text = $"Ready";
+            //display playerBready
+            //invoke a function to start game countdown before start playing.
+            Invoke("GameStarting", 1.3f);
+        }
+        player.ui.deviceIndicator.sprite = inputSprite;
+      
     }
 
-    private void OnDisable()
+    void GameStarting()
     {
+        //decrement time counter; 
+        //set both players and cam to enabled true when done. 
+        print("starting game timer");
+        gameStartTimer.gameObject.SetActive(true);
+        playerA.ui.checkPlayerReadyText.gameObject.SetActive(false);
+        playerA.ui.playerName.gameObject.SetActive(false);
+        playerB.ui.checkPlayerReadyText.gameObject.SetActive(false);
+        playerB.ui.playerName.gameObject.SetActive(false);
+        //set object on
+        //set timer object to true;
+        //show timer on canvas, reach 0 then disable and enable below 
+    }
 
+    void SettingPlayers()
+    {
+        playerA.ui.playerReadyPanel.gameObject.SetActive(false);
+        playerB.ui.playerReadyPanel.gameObject.SetActive(false);
+        playerA.ui.gameObject.SetActive(true);
+        playerB.ui.gameObject.SetActive(true);
+
+        playerA.enabled = true;
+        playerB.enabled = true;
+        gameStarted = true;
     }
     public void PlayerWon()
     {
@@ -157,5 +231,12 @@ public class GameManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
     }
 
-
+    public void SetLayerAllChildren(Transform root, int layer)
+    {
+        var children = root.GetComponentsInChildren<Transform>(includeInactive: true);
+        foreach (var child in children)
+        {
+            child.gameObject.layer = layer;
+        }
+    }
 }

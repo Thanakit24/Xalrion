@@ -7,6 +7,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -6084317168138873837, guid: 336e8b1156fb6434c822d603d607e0f7, type: 3}
+      propertyPath: hitMask.m_Bits
+      value: 256
+      objectReference: {fileID: 0}
     - target: {fileID: 4219140594632848805, guid: 336e8b1156fb6434c822d603d607e0f7, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -57,7 +61,11 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 6a62a93cd54a0b14b884b45eeb9edd7b, type: 2}
     - target: {fileID: 8937822956089399610, guid: 336e8b1156fb6434c822d603d607e0f7, type: 3}
       propertyPath: m_Name
-      value: PlayerB_RocketShot Variant
+      value: PlayerB_RocketShot
+      objectReference: {fileID: 0}
+    - target: {fileID: 8937822956089399610, guid: 336e8b1156fb6434c822d603d607e0f7, type: 3}
+      propertyPath: m_Layer
+      value: 12
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 336e8b1156fb6434c822d603d607e0f7, type: 3}

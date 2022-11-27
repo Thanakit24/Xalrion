@@ -313,7 +313,7 @@ public class BackdashState : BasePlayerState
             //print(hit.transform.name);
         }
         Vector3 direction = _pc.targetPoint - _pc.shootPoint.position;
-        GameObject currentBullet = _pc.backDashShot;
+        GameObject currentBullet = GameObject.Instantiate(_pc.backDashShotPrefab, _pc.shootPoint.position, Quaternion.LookRotation(direction));
         _pc.ChangeState(new FallState(_pc));
 
 

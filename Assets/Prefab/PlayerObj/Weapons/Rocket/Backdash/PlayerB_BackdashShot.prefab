@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2842291987222152265}
   - component: {fileID: 3773852297453204647}
   - component: {fileID: -6227729949025494533}
-  m_Layer: 7
+  m_Layer: 12
   m_Name: PlayerB_BackdashShot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -62,7 +62,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100006, guid: b451a052397f03c4f8a04d915d1c0492, type: 3}
+  - {fileID: 2100000, guid: e4b071e80df03ea4ba90ea108692fdf1, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -132,4 +132,7 @@ MonoBehaviour:
   hitMask:
     serializedVersion: 2
     m_Bits: 256
+  blockExplosionLayer:
+    serializedVersion: 2
+    m_Bits: 0
   damage: 70
