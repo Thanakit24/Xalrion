@@ -400,7 +400,7 @@ public class @InputMaster : IInputActionCollection, IDisposable
             ""actions"": [
                 {
                     ""name"": ""Pause"",
-                    ""type"": ""Button"",
+                    ""type"": ""PassThrough"",
                     ""id"": ""5ff3fce1-14f1-4608-9201-f7502163bccd"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",

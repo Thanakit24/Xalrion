@@ -9,22 +9,6 @@ public class BasePlayerState : BaseState
     {
         _pc = pc;
     }
-    //public override void OnEnter()
-    //{
-    //    base.OnEnter();
-    //    _pc.jumpForce *= 20;
-    //}
-
-    //public override void OnExit()
-    //{
-    //    base.OnExit();
-    //    _pc.jumpForce /= 20;
-    //}
-
-    //public override void OnUpdate()
-    //{
-
-    //}
     
 }
 public class GroundMoveState : BasePlayerState

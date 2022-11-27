@@ -15,10 +15,12 @@ public class BuffDetails : ScriptableObject
     public virtual void OnPickup(PlayerStatemachine player)
     {
         Debug.Log($"{player.name}: Pickup up {name}");
+        player.buffParticles.gameObject.SetActive(true);
     }
     public virtual void OnDrop(PlayerStatemachine player)
     {
         Debug.Log($"{player.name}: Finished up {name}");
+        player.buffParticles.gameObject.SetActive(false);
     }
 
 }

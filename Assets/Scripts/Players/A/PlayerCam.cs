@@ -31,13 +31,6 @@ public class PlayerCam : MonoBehaviour
     private void OnEnable()
     {
         playerInput.Enable();
-
-        //print("set to player a input");
-        //playerInputs.Player.Move.performed += ctx => OnMove(ctx);
-        //playerInputs.Player.Jump.performed += ctx => OnJump(ctx);
-        //playerInputs.Player.Launch.performed += ctx => OnLaunch(ctx);
-        //playerInputs.Player.Fire.performed += ctx => OnFireRocket(ctx);
-        //playerInputs.Player.Fire2.performed += ctx => OnBackdashShot(ctx);
     }
     private void OnDestroy()
     {

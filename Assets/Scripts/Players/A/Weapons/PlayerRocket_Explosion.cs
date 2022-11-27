@@ -58,7 +58,7 @@ public class PlayerRocket_Explosion : MonoBehaviour
                     float damage = RemapRange(Mathf.Clamp(distance, 0f, radius), 0f, radius, maxDamage, minDamage);
                     var player = rb.GetComponent<PlayerStatemachine>();
                     player.TakeDamage(Mathf.RoundToInt(damage));
-                    print(damage);
+                    //print(damage);
                     if (player.currentHealth <= 0)
                     {
                         return;

@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: FirerateIncrease
   m_EditorClassIdentifier: 
   duration: 10
-  icon: {fileID: 21300000, guid: 0132349036ea2d74f86d69d6ac71bcee, type: 3}
+  icon: {fileID: 21300000, guid: 2648f6eaeb7ea7d4c99182403c4a4c1d, type: 3}
   description: pewpew
   newCooldown: 1.5

@@ -13,8 +13,9 @@ GameObject:
   - component: {fileID: 8922674891085867958}
   - component: {fileID: 8922674891085867959}
   - component: {fileID: 8922674891085867960}
+  - component: {fileID: -1321617007881216601}
   m_Layer: 0
-  m_Name: FireratePickup
+  m_Name: FireRatePickup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -61,7 +62,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 11ce3351dec92824cb3382a1ad135379, type: 2}
+  - {fileID: 2100000, guid: 4182082698deddc4283d66bf49daa5d0, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -109,3 +110,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buffDetails: {fileID: 11400000, guid: 2f937f97380ba3a4389085b436868137, type: 2}
+--- !u!114 &-1321617007881216601
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8922674891085867961}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 124cd258433afeb49b3ce723847fe77b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 200

@@ -92,6 +92,7 @@ public class PlayerStatemachine : StateMachine
     public float launchInput;
     [Header("Particles")]
     public ParticleSystem jetPackParticle;
+    public ParticleSystem buffParticles; 
 
     [HideInInspector] public Rigidbody rb;
 
@@ -104,7 +105,7 @@ public class PlayerStatemachine : StateMachine
     public MeshRenderer playerMesh;
     public MeshRenderer armMesh;
     public GameObject face;
-    private PlayerInput pi;
+    public PlayerInput pi;
 
     public override BaseState DefaultState()
     {
@@ -126,7 +127,7 @@ public class PlayerStatemachine : StateMachine
     protected override void Start()
     {
         base.Start();
-        playerInputs.Disable();
+        //playerInputs.Disable();
         respawnTimer = respawnTimerMax;
         currentHealth = maxHealth;
         ui.health.maxValue = maxHealth;
@@ -202,7 +203,7 @@ public class PlayerStatemachine : StateMachine
     public void OnFire(InputValue value)
     {
         var fireInput = value.Get<float>();
-        if (fireInput > 0.1f && readyToShoot)
+        if (fireInput > 0.1f && readyToShoot && GameManager.instance.gameStarted)
         {
             //Debug.Log("Fire rocket");
             rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
@@ -285,15 +286,27 @@ public class PlayerStatemachine : StateMachine
 
         if (ui.respawningUI.activeSelf) //check if respawning ui is on, if it is start countdown 
         {
+            var temp = true;
+            if (temp)
+            {
+                Instantiate(GameManager.instance.playerDeadBody, transform.position, Quaternion.identity);
+                temp = false;
+            }
             respawnTimer -= 1 * Time.deltaTime;
             pi.DeactivateInput();
-
+            rb.velocity = Vector2.zero;
+            playerMesh.enabled = false;
+            armMesh.enabled = false;
+            face.SetActive(false);
             //Mathf.RoundToInt(gameCountdownTimer);
             ui.respawnTimerText.text = respawnTimer.ToString("0");//countdown ui
             if (respawnTimer <= 0) //countdown over
             {
                 respawnTimer = respawnTimerMax;
                 ui.respawningUI.gameObject.SetActive(false);
+                playerMesh.enabled = true;
+                armMesh.enabled = true;
+                face.SetActive(true);
                 pi.ActivateInput();
                 OnSpawn(); //spawn player on spawnpoint 
             }

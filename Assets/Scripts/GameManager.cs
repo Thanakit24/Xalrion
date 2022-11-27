@@ -33,6 +33,10 @@ public class GameManager : MonoBehaviour
     public GameObject playerABackdash;
     public GameObject playerBBackdash;
 
+    [Header("Player Particles")]
+    public Material playerAbuffColor;
+    public Material playerBbuffColor;
+
     [Header("UI")]
     public PlayerUI playerAUI;
     public PlayerUI playerBUI;
@@ -40,11 +44,9 @@ public class GameManager : MonoBehaviour
     public Sprite ControllerSprite;
     public TMP_Text gameStartTimer; 
 
-
     [Header("Player Spawns")]
     public Transform playerASpawnpoint;
     public Transform playerBSpawnpoint;
-
 
     [Header("PlayerALives")]
     public TMP_Text playerA_LivesDisplay;
@@ -62,9 +64,14 @@ public class GameManager : MonoBehaviour
     public GameObject A_damageFlash;
     public GameObject B_damageFlash;
 
+    [Header("Player DeadBean")]
+    public GameObject playerDeadBody;
+
     [Header("GameFinish UI")]
     public GameObject gameWonUI;
     public TMP_Text playerText;
+
+    public GameObject itemSpawnerUI;
 
     // Start is called before the first frame update
     void Awake()
@@ -146,6 +153,8 @@ public class GameManager : MonoBehaviour
             player.rocketPrefab = playerARocket;
             player.backDashShotPrefab = playerABackdash;
             player.homingRocketPrefab = playerAhomingRocket;
+            player.buffParticles.GetComponent<ParticleSystemRenderer>().material = playerAbuffColor;
+
             player.cam.rect = new Rect(new Vector2(0, 0), new Vector2(0.5f, 1)); //split cam 
             //player.playerInputs.Player.Disable();
             player.enabled = false;
@@ -165,6 +174,7 @@ public class GameManager : MonoBehaviour
             player.rocketPrefab = playerBRocket;
             player.backDashShotPrefab = playerBBackdash;
             player.homingRocketPrefab = playerBhomingRocket;
+            player.buffParticles.GetComponent<ParticleSystemRenderer>().material = playerBbuffColor;
             player.cam.rect = new Rect(new Vector2(0.5f, 0), new Vector2(0.5f, 1)); //split cam
             //player.playerInputs.Player.Disable();
             player.enabled = false;
@@ -188,7 +198,6 @@ public class GameManager : MonoBehaviour
             Invoke("GameStarting", 1.3f);
         }
         player.ui.deviceIndicator.sprite = inputSprite;
-      
     }
 
     void GameStarting()
@@ -216,6 +225,7 @@ public class GameManager : MonoBehaviour
         playerA.enabled = true;
         playerB.enabled = true;
         gameStarted = true;
+        PauseMenu.Instance.Init();
     }
     public void PlayerWon()
     {
@@ -233,6 +243,9 @@ public class GameManager : MonoBehaviour
 
         }
         Time.timeScale = 0f;
+        playerA.ui.gameObject.SetActive(false);
+        playerB.ui.gameObject.SetActive(false);
+        itemSpawnerUI.gameObject.SetActive(false);
         gameWonUI.SetActive(true);
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;

@@ -7,7 +7,10 @@ using UnityEngine.InputSystem;
 
 public class PauseMenu : MonoBehaviour
 {
+    public static PauseMenu Instance;
     public static bool GameIsPaused = false;
+    private InputMaster pInput;
+    private InputAction action;
     public EventSystem eventSys;
     public GameObject pauseMenuUI;
     public GameObject playerA_UI;
@@ -15,27 +18,43 @@ public class PauseMenu : MonoBehaviour
     public GameObject resumeButton;
     //public GameObject controlsUI;
 
-    void Start()
+    private void Awake()
     {
+        Instance = this;
         pauseMenuUI.SetActive(false);
+        pInput = new InputMaster();
+    }
+
+    private void OnEnable()
+    {
+        action = pInput.UI.Pause;
+        action.Enable();
+    }
+
+    private void OnDisable()
+    {
+        action.Disable();
+    }
+    public void Init()
+    {
         //Resume();
-        GameManager.instance.playerA.playerInputs.UI.Pause.performed += ctx => PauseResumeButton(ctx);
-        GameManager.instance.playerB.playerInputs.UI.Pause.performed += ctx => PauseResumeButton(ctx);
+        //GameManager.instance.playerA.playerInputs.UI.Pause.performed += ctx => PauseResumeButton(ctx);
+        //GameManager.instance.playerB.playerInputs.UI.Pause.performed += ctx => PauseResumeButton(ctx);
         //GameManager.instance.playerB.playerInputs.Player.Pause.performed += ctx => Pause(ctx);
         //GameManager.instance.playerB.playerInputs.Player.Pause.performed += ctx => Resume(ctx);
     }
     void Update()
     {
-       if (Input.GetKeyDown(KeyCode.Escape)) //temp 
+        if (Input.GetKeyDown(KeyCode.Escape) && GameManager.instance.gameStarted) //temp 
         {
-            //do pause
+            PauseResumeButton();
         }
     }
     //public void Resume(InputAction.CallbackContext ctx) 
     //{
     //    if (pauseMenuUI.activeSelf)
     //    {
-           
+
     //    }
 
     //    //resume overrides pause. 
@@ -53,9 +72,9 @@ public class PauseMenu : MonoBehaviour
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
     }
-    public void PauseResumeButton(InputAction.CallbackContext ctx)
+    public void PauseResumeButton(/*InputAction.CallbackContext ctx*/)
     {
-        if (ctx.performed && !pauseMenuUI.activeSelf)
+        if (/*ctx.performed && */!pauseMenuUI.activeSelf)
         {
             print("pause on");
             eventSys.firstSelectedGameObject = resumeButton;
@@ -68,7 +87,7 @@ public class PauseMenu : MonoBehaviour
             GameIsPaused = true;
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
-            
+
         }
         else
         {
@@ -85,7 +104,7 @@ public class PauseMenu : MonoBehaviour
 
         }
     }
-        
+
     public void Close()
     {
 

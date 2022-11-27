@@ -28,6 +28,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 5515196852853610948}
+  - {fileID: 394148427164359198}
   m_Father: {fileID: 2267536426993344526}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5143,7 +5144,6 @@ GameObject:
   m_Component:
   - component: {fileID: 329214681445588983}
   - component: {fileID: 8398524213867431616}
-  - component: {fileID: 9030855157514990929}
   - component: {fileID: 671086508935530931}
   - component: {fileID: 1114221304050449181}
   m_Layer: 8
@@ -5211,14 +5211,6 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!81 &9030855157514990929
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2666069496908711115}
-  m_Enabled: 1
 --- !u!114 &671086508935530931
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5374,14 +5366,14 @@ MonoBehaviour:
   hitLayer:
     serializedVersion: 2
     m_Bits: 64
-  rocketPrefab: {fileID: 8937822956089399610, guid: 5b8299b6c3d4d3246bae6ed5d859ab2e, type: 3}
+  rocketPrefab: {fileID: 0}
   homingRocketPrefab: {fileID: 0}
   recoilForce: 10
   shootForce: 25
   readyToShoot: 1
   coolDown: 2
   allowInvoke: 1
-  backDashShotPrefab: {fileID: 1581546879607055117, guid: 17fcd47e550c72e4dbe56fffa2866908, type: 3}
+  backDashShotPrefab: {fileID: 0}
   backDashForce: 22
   upBackDashForce: 8
   dashcoolDown: 0
@@ -5392,6 +5384,7 @@ MonoBehaviour:
   jetpackInput: 0
   launchInput: 0
   jetPackParticle: {fileID: 4057406328394927792}
+  buffParticles: {fileID: 4624178824976138991}
   rb: {fileID: 3711694057542532741}
   cam: {fileID: 8398524213867431616}
   camScript: {fileID: 1114221304050449181}
@@ -5400,6 +5393,7 @@ MonoBehaviour:
   playerMesh: {fileID: 2457124620730279317}
   armMesh: {fileID: 3360706582053867143}
   face: {fileID: 2512185664252336179}
+  pi: {fileID: 0}
 --- !u!114 &3067884352515336109
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15273,3 +15267,74 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
+--- !u!1001 &3799264506242107274
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 2946397461362638506}
+    m_Modifications:
+    - target: {fileID: 3585420658154577300, guid: c09b6c9f8362e8d4da9ed662861617a6, type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3585420658154577300, guid: c09b6c9f8362e8d4da9ed662861617a6, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3585420658154577300, guid: c09b6c9f8362e8d4da9ed662861617a6, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.82
+      objectReference: {fileID: 0}
+    - target: {fileID: 3585420658154577300, guid: c09b6c9f8362e8d4da9ed662861617a6, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.61
+      objectReference: {fileID: 0}
+    - target: {fileID: 3585420658154577300, guid: c09b6c9f8362e8d4da9ed662861617a6, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 3585420658154577300, guid: c09b6c9f8362e8d4da9ed662861617a6, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 3585420658154577300, guid: c09b6c9f8362e8d4da9ed662861617a6, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3585420658154577300, guid: c09b6c9f8362e8d4da9ed662861617a6, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3585420658154577300, guid: c09b6c9f8362e8d4da9ed662861617a6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 3585420658154577300, guid: c09b6c9f8362e8d4da9ed662861617a6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3585420658154577300, guid: c09b6c9f8362e8d4da9ed662861617a6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8421525785403164533, guid: c09b6c9f8362e8d4da9ed662861617a6, type: 3}
+      propertyPath: m_Name
+      value: PlayBuffparticles
+      objectReference: {fileID: 0}
+    - target: {fileID: 8421525785403164533, guid: c09b6c9f8362e8d4da9ed662861617a6, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: c09b6c9f8362e8d4da9ed662861617a6, type: 3}
+--- !u!4 &394148427164359198 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3585420658154577300, guid: c09b6c9f8362e8d4da9ed662861617a6, type: 3}
+  m_PrefabInstance: {fileID: 3799264506242107274}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &4624178824976138991 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 8400850290338268517, guid: c09b6c9f8362e8d4da9ed662861617a6, type: 3}
+  m_PrefabInstance: {fileID: 3799264506242107274}
+  m_PrefabAsset: {fileID: 0}

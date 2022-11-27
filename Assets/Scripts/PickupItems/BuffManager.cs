@@ -46,6 +46,7 @@ public class BuffManager : MonoBehaviour
         {
             buffs.Remove(buffToRemove);
             buffToRemove.OnDrop(player);
+            player.buffParticles.gameObject.SetActive(false);
         }
     }
 

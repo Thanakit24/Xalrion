@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8922674891085867958}
   - component: {fileID: 8922674891085867959}
   - component: {fileID: 8922674891085867960}
+  - component: {fileID: 6609147473110516893}
   m_Layer: 0
   m_Name: HomingRocketPickup
   m_TagString: Untagged
@@ -61,7 +62,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 11ce3351dec92824cb3382a1ad135379, type: 2}
+  - {fileID: 2100000, guid: 1707026777effc2489471f9bdfd447be, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -109,3 +110,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buffDetails: {fileID: 11400000, guid: db55767a575e5214c8b55dc503685559, type: 2}
+--- !u!114 &6609147473110516893
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8922674891085867961}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 124cd258433afeb49b3ce723847fe77b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 200

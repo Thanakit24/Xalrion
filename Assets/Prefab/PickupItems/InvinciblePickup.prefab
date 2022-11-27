@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8922674891085867958}
   - component: {fileID: 8922674891085867959}
   - component: {fileID: 8922674891085867960}
+  - component: {fileID: 210508224596020836}
   m_Layer: 0
   m_Name: InvinciblePickup
   m_TagString: Untagged
@@ -109,3 +110,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buffDetails: {fileID: 11400000, guid: 55bc8dfa86b976f41b2d909f17ad4323, type: 2}
+--- !u!114 &210508224596020836
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8922674891085867961}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 124cd258433afeb49b3ce723847fe77b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 200

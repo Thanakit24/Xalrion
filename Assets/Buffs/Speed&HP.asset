@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2a06e534321ef241bfcec9ecc165e50, type: 3}
   m_Name: Speed&HP
   m_EditorClassIdentifier: 
-  duration: 8
+  duration: 10
   icon: {fileID: 21300000, guid: 3ac65e1402ce9a247829705d2819bcd0, type: 3}
   description: Sppeed
   increaseMoveSpeed: 3

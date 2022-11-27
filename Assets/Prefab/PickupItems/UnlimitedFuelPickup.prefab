@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8922674891085867958}
   - component: {fileID: 8922674891085867959}
   - component: {fileID: 8922674891085867960}
+  - component: {fileID: 8555223467934480534}
   m_Layer: 0
   m_Name: UnlimitedFuelPickup
   m_TagString: Untagged
@@ -109,3 +110,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buffDetails: {fileID: 11400000, guid: 0070ca03396b1e44dbe2fe19ee6c6faf, type: 2}
+--- !u!114 &8555223467934480534
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8922674891085867961}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 124cd258433afeb49b3ce723847fe77b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 200
